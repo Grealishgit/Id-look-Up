@@ -21,18 +21,28 @@ Node.js: To run the backend server.
 npm or yarn: To install dependencies.
 MongoDB (or another database, if applicable): If you're using a database for storing document statuses.
 
-//git clone https://github.com/YourUsername/ID-Look-Up.git
-//cd ID-Look-Up
+``
+git clone https://github.com/YourUsername/ID-Look-Up.git
+``
+``
+cd ID-Look-Up
+`
 cd frontend
-
+``
+``
 npm install
-
+``
 Backend Setup (Node.js)
 Navigate to the backend directory:
-//cd backend
+``
+cd backend
+``
+``
 npm install
-
-//npm start server
+``
+``
+npm start server
+``
 
 This will start the React app on http://localhost:4000.
 

@@ -1,54 +1,59 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import { poolPromise } from './config/dbConfig.js'; // Database pool  
-import userRoute from './Routes/userRoute.js';
-import reportRoute from './Routes/reportRoute.js'; // Import the report route  
-import reportPassportRoute from './Routes/reportPassportRoute.js';
+import express from "express";
+import cors from "cors";
+import { connectDB } from "./config/dbConfig.js";
+import "dotenv/config";
 
-dotenv.config();
 
+// App config
 const app = express();
+const port = process.env.PORT || 4000;
 
-// Middleware  
-app.use(cors({
-    origin: 'http://localhost:5173', // Replace with your frontend URL
-    methods: ['GET', 'POST'],       // Allow necessary methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers
-}));
 
+// Middleware
 app.use(express.json());
 
-// Connect to the database before starting the server  
-const connectDB = async () => {
-    try {
-        await poolPromise; // Ensure connection pool is initialized  
-        console.log('Connected✅ to SQL Server Successfully👌');
-    } catch (err) {
-        console.error('Database connection failed:', err);
-        process.exit(1); // Exit if database connection fails  
-    }
+const allowedOrigins = [
+    process.env.ADMIN_FRONTEND_URL,
+    process.env.USER_FRONTEND_URL,
+].filter(Boolean);
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true); // ✅ Allow request
+        } else {
+            console.log("❌ Blocked by CORS:", origin);
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization,token",
+    credentials: true,
 };
 
-// Use Routes  
-app.use('/api/auth', userRoute);  // Handle user authentication routes (login/signup)
-app.use('/api/user', userRoute);  // Handle user profile routes
-app.use('/', reportRoute);        // Report routes
-app.use('/api', reportPassportRoute);
+app.use(cors(corsOptions));
 
-// Ensure the DB is connected before starting the server  
-connectDB().then(() => {
-    console.log('Database Connected💪..👍..✊.Good To Go🤪');
 
-    // Default Route  
-    app.get('/', (req, res) => {
-        res.send('API IS WORKING');
-        console.log('Api working');
-    });
 
-    // Start the server  
-    const PORT = process.env.PORT || 4000;
-    app.listen(PORT, () => {
-        console.log(`Server is running on port🤜🤛 ${PORT}`);
-    });
+
+app.use(cors(corsOptions));
+
+app.use(express.urlencoded({ extended: true }));
+
+// Database connection
+connectDB();
+
+// API endpoints
+
+
+// Default route
+app.get("/", (req, res) => {
+    res.send("API Working");
 });
+
+
+// Start server
+app.listen(port, () => {
+    console.log(`Server Started on http://localhost:${port}`);
+});
+

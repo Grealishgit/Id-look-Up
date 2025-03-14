@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/dbConfig.js";
 import "dotenv/config";
+import userRoutes from './Routes/userRoute.js'
 
 
 // App config
@@ -44,7 +45,7 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // API endpoints
-
+app.use('/', userRoutes)
 
 // Default route
 app.get("/", (req, res) => {

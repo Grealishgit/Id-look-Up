@@ -1,46 +1,75 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import sql from 'mssql';
-import dbConfig from '../config/dbConfig.js';
+import User from '../models/userModel.js';
+import generateToken from '../utils/generateToken.js';
 
 export const signUp = async (req, res) => {
     const { fname, lname, email, password } = req.body;
+    if (!fname || !lname || !email || !password) {
+        return res.json({ success: false, messge: "Missing Details" })
+    }
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const pool = await sql.connect(dbConfig);
-        await pool.request()
-            .input('fname', sql.VarChar, fname)
-            .input('lname', sql.VarChar, lname)
-            .input('email', sql.VarChar, email)
-            .input('password', sql.VarChar, hashedPassword)
-            .query('INSERT INTO Users (fname, lname, email, password) VALUES (@fname, @lname, @email, @password)');
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.json({ success: false, messge: "User Already Exists" })
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to register user' });
+        const user = await User.create({
+            fname,
+            lname,
+            email,
+            password: hashedPassword,
+        })
+
+        res.json({
+            success: true,
+            user: {
+                _id: user._id,
+                fname: user.fname,
+                lname: user.lname,
+                email: user.email
+            },
+            token: generateToken(user._id),
+            message: 'User Registered Successfully'
+        })
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
     }
 };
 
+
+
+
 export const login = async (req, res) => {
     const { email, password } = req.body;
+
     try {
-        const pool = await sql.connect(dbConfig);
-        const result = await pool.request()
-            .input('email', sql.VarChar, email)
-            .query('SELECT * FROM Users WHERE email = @email');
+        const user = await User.findOne({ email });
+        if (!user) {
+            res.json({ success: false, message: "Invalid Credentials" });
 
-        const user = result.recordset[0];
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
+        }
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) return res.status(401).json({ error: 'Invalid credentials' });
+        if (!isPasswordValid) {
+            return res.json({ success: false, message: 'Invalid Credentials' });
+        }
+        res.json({
+            success: true,
+            user: {
+                _id: user._id,
+                fname: user.fname,
+                lname: user.lname,
+                email: user.email
+            },
+            token: generateToken(user._id),
+            message: 'User Logged In Successfully'
+        })
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Login successful', token });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Login failed' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
+
 };

@@ -72,14 +72,14 @@ const MyProfile = () => {
     };
 
     return (
-        <div className='mt-14 p-8'>
+        <div className='mt-14 p-8 bg-emerald-50'>
             <h1 className="text-4xl font-bold text-center text-gray-800">
                 Your <span className="text-green-500">Profile <span className='text-red-500'>Info</span> </span>
             </h1>
             <p className='text-center text-md font-semibold'>
                 If you want to edit your profile, click the <span className='text-blue-600'>Edit Profile button</span> below,<br /> or if you want to change information on your profile
             </p>
-            <div className="flex flex-col items-center max-w-md mx-auto mt-10 mb-2 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
+            <div className="flex flex-col items-center max-w-md mx-auto mt-10 mb-2 p-6 bg-gray-100 border border-gray-200 rounded-lg shadow-md">
                 <p className='text-center text-2xl font-semibold mt-2'>Personal <span className='text-blue-600'>Information</span> </p>
                 <div className="mb-4 mt-2">
                     {user.profilePicture ? (

@@ -5,7 +5,7 @@ import { RiMenu2Line } from "react-icons/ri";
 import { FaAngleDown, FaFileSignature, FaHome } from "react-icons/fa";
 import { FaCircleUser, FaPassport } from "react-icons/fa6";
 import { IoIosNotifications, IoMdInformationCircle } from "react-icons/io";
-import { MdFindInPage, MdContactMail, MdReport, MdLogin } from "react-icons/md";
+import { MdFindInPage, MdContactMail, MdReport, MdLogin, MdWbSunny, MdSettings } from "react-icons/md";
 
 
 
@@ -31,7 +31,7 @@ const Navbar = () => {
     return (
         <div>
             {/* Navbar (Desktop & Mobile) */}
-            <nav className="bg-gray-800 text-white p-4 flex items-center fixed top-0 left-0 w-full z-50">
+            <nav className="bg-gray-700 text-white p-4 flex items-center fixed top-0 left-0 w-full z-50">
                 {/* Logo - Left */}
                 <div className="font-bold text-4xl">
                     <a href="/">ID <span className="text-green-600">Look</span>-<span className="text-red-600">Up</span>.</a>
@@ -72,18 +72,21 @@ const Navbar = () => {
                 {/* User Icon (Right-aligned) */}
                 {token && (
                     <div className="ml-auto hidden lg:flex gap-4">
-                        {/* Notifications Icon */}
+
+                        <MdWbSunny className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1"
+                            aria-label="Theme" />
                         <IoIosNotifications
                             className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1"
                             aria-label="Notifications"
                         />
-
                         {/* User Profile Icon */}
                         <Link to="/my-profile" aria-label="My Profile">
                             <FaCircleUser
                                 className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1"
                             />
                         </Link>
+                        <MdSettings className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1"
+                            aria-label="Settings" />
                     </div>
 
                 )}

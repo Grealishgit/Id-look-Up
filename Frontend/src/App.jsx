@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Header from './Components/Header';
 import Navbar from './Components/Navbar';
 import Contact from './Pages/Contact';
@@ -22,9 +22,9 @@ import MyProfile from './Pages/MyProfile';
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <>
       <ToastContainer />
-      <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900">
         <Navbar />
         <Routes>
           <Route path="/" element={<Header />} />
@@ -44,7 +44,7 @@ const App = () => {
         </Routes>
         <Footer />
       </div>
-    </BrowserRouter>
+    </>
   );
 };
 

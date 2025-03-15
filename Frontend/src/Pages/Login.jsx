@@ -22,7 +22,7 @@ const Login = () => {
         setLoading(true); // Set loading state when form is submitted
 
         try {
-            const response = await axios.post('http://localhost:4000/api/auth/login', formData);
+            const response = await axios.post('http://localhost:4000/login', formData);
             toast.success("Login successfully");
 
             // Store the token and user data in localStorage

@@ -31,7 +31,7 @@ const Contact = () => {
 
 
     return (
-        <div className="max-w-screen-full mx-auto mt-10 py-12 px-4 bg-red-50 min-h-screen" id="Contact">
+        <div className="max-w-screen-full mx-auto mt-10 py-12 px-4 min-h-screen" id="Contact">
             <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
                 Get in <span className='text-green-500'>Touch</span>  with <span className='text-red-500'>Us</span>
             </h1>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { FaLock } from "react-icons/fa";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -48,7 +49,9 @@ const Login = () => {
                 onSubmit={handleSubmit}
                 className="bg-white p-8 rounded shadow-md max-w-md w-full"
             >
-                <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+                <h2 className="text-2xl font-bold items-center justify-center text-center flex gap-3 mb-6">
+                    <FaLock />
+                    Login</h2>
                 {error && (
                     <p className="text-red-500 text-center mb-4">{error}</p>
                 )}

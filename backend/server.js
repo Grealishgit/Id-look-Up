@@ -2,16 +2,16 @@ import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/dbConfig.js";
 import "dotenv/config";
-import userRoutes from './Routes/userRoute.js'
-
+import userRoutes from "./Routes/userRoute.js";
+import reportRoutes from "./Routes/reportRoute.js"
+import authenticateToken from "./middlewares/authUser.js"; // Import JWT middleware
 
 // App config
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 4000;
 
-
 // Middleware
-app.use(express.json());
 
 const allowedOrigins = [
     process.env.ADMIN_FRONTEND_URL,
@@ -33,28 +33,27 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-
-
-
-app.use(cors(corsOptions));
-
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
 connectDB();
 
-// API endpoints
-app.use('/', userRoutes)
+// API Endpoints
+app.use("/auth", userRoutes);
+app.use("/", userRoutes);
+app.use("/", reportRoutes)
+
+// Protected Route Example
+app.get("/dashboard", authenticateToken, (req, res) => {
+    res.json({ message: "Welcome to the Dashboard!", user: req.user });
+});
 
 // Default route
 app.get("/", (req, res) => {
     res.send("API Working");
 });
 
-
 // Start server
 app.listen(port, () => {
-    console.log(`Server Started on Port:${port}`);
+    console.log(`🚀 Server Started on Port:${port}`);
 });
-

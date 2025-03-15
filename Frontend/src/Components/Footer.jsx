@@ -60,9 +60,11 @@ const Footer = () => {
                     </div>
 
                     {/* Copyright Info */}
-                    <p className="text-gray-400 flex gap-2 items-center text-lg">
-                        &copy; 2025 ID Look-Up. All Rights Reserved.Developed with  <FaHeart className='text-red-500' width={20} /> by HunterInc-Developers
+                    <p className="text-gray-400 text-sm sm:text-base md:text-lg flex gap-2 items-center justify-center">
+                        &copy; 2025 ID Look-Up. Developed with&nbsp;
+                        ❤️ by HunterInc-Developers. All Rights Reserved. 
                     </p>
+
                 </div>
             </div>
         </div>

@@ -58,7 +58,7 @@ const Header = () => {
 
                 <div className="mt-4 mb-5">
                     <h1 className="text-5xl text-green-500 font-semibold cursor-pointer text-center p-3">
-                        Available <span className='text-red-500'>Services</span>
+                        Available <span className='text-black'>Services</span>
                     </h1>
                     <p className="text-center text-gray-700 font-semibold text-lg">
                         Discover a variety of services we offer to simplify and secure your document management.
@@ -158,8 +158,8 @@ const Header = () => {
                 {!token && (
                     <>
                         <div className="mt-4 mb-5">
-                            <div className='bg-gray-200 rounded-lg mt-6 p-4 shadow-black shadow-lg transition-transform transform hover:scale-105'>
-                                <h3 className="text-2xl font-semibold mb-2 mt-3 text-center text-red-500">About Us</h3>
+                            <div className='bg-gray-200 rounded-lg z-30 mt-6 p-4 shadow-black shadow-lg '>
+                                <h3 className="text-2xl font-semibold  mb-2 mt-3 text-center text-red-500">About Us</h3>
                                 <p className="text-lg text-black font-semibold text-center">
                                     ID Look-Up is a dedicated platform designed to help you recover lost documents effortlessly.
                                     <br /> We specialize in providing a secure and user-friendly service for tracking lost IDs,

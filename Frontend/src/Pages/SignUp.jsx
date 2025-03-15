@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { FaUserEdit } from "react-icons/fa";
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -27,7 +27,7 @@ const SignUp = () => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:4000/api/auth/signup', {
+            const response = await fetch('http://localhost:4000/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +66,9 @@ const SignUp = () => {
                 onSubmit={handleSubmit}
                 className="bg-white p-8 rounded shadow-md max-w-md w-full"
             >
-                <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
+                <h2 className="text-2xl font-bold items-center gap-3 flex justify-center text-center mb-6">
+                    <FaUserEdit />
+                    Sign Up</h2>
 
                 {error && <p className="text-red-500 text-center mb-4">{error}</p>} {/* Error message */}
 

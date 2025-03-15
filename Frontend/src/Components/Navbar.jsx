@@ -48,20 +48,20 @@ const Navbar = () => {
                                         className="text-2xl font-semibold flex items-center"
                                         onClick={toggleIdDropdown}
                                     >
-                                        ID Finder
+                                        Finder
                                         <span className={`ml-2 w-6 h-5 transform transition-transform ${isIdDropdownOpen ? 'rotate-180' : ''}`}>
                                             <FaAngleDown />
                                         </span>
                                     </button>
                                     {isIdDropdownOpen && (
                                         <ul className="absolute top-10 left-0 bg-gray-700 text-white rounded shadow-lg p-2 space-y-2">
-                                            <li><Link to="/apply-id" className="block text-green-500 font-semibold px-4 py-2 hover:bg-gray-600">Apply ID</Link></li>
+                                            <li><Link to="/passport-finder" className="block text-green-500 font-semibold px-4 py-2 hover:bg-gray-600">Passport Finder</Link></li>
                                             <li><Link to="/id-finder" className="block text-green-500 font-semibold px-4 py-2 hover:bg-gray-600">ID Finder</Link></li>
                                             <li><Link to="/kra-finder" className="block text-green-500 font-semibold px-4 py-2 hover:bg-gray-600">KRA Finder</Link></li>
                                         </ul>
                                     )}
                                 </li>
-                                <li><Link to="/passport-finder" className="text-2xl">Passport</Link></li>
+                                <li><Link to="/applications" className="text-2xl font-semibold">Applications</Link></li>
                                 <li><Link to="/report" className="text-2xl font-semibold">Report</Link></li>
                                 <li><Link to="/contact" className="text-2xl font-semibold">Contact Us</Link></li>
                             </>
@@ -111,7 +111,7 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             <div
-                className={`lg:hidden fixed space-y-4  top-3 right-0 bg-gray-800 text-white w-1/2 h-full flex flex-col items-start pt-20 transition-all duration-300 ease-in-out transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                className={`lg:hidden fixed space-y-4 z-80  top-3 right-0 bg-gray-800 text-white w-1/2 h-full flex flex-col items-start pt-20 transition-all duration-300 ease-in-out transform ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
                     }`}
             >
                 {/*  {token && (
@@ -132,7 +132,7 @@ const Navbar = () => {
                             onClick={toggleIdDropdown}
                         >
                             <MdFindInPage width={60} />
-                            ID Finder
+                            Finder
                             <span className={`ml-2 w-6 h-6 transform transition-transform duration-300 ${isIdDropdownOpen ? 'rotate-180' : ''}`}>
                                 <FaAngleDown />
                             </span>
@@ -140,15 +140,15 @@ const Navbar = () => {
 
                         {isIdDropdownOpen && (
                             <ul className="mt-2 space-y-4 text-start ml-10">
-                                <li><Link to="/apply-id" className="block  font-semibold px-4 py-2 hover:bg-gray-600 underline rounded" onClick={handleLinkClick}>Apply ID</Link></li>
-                                <li><Link to="/id-finder" className="block font-semibold px-4 py-2 hover:bg-gray-600 underline rounded" onClick={handleLinkClick}>ID Finder</Link></li>
+                                <li><Link to="/id-finder" className="block  font-semibold px-4 py-2 hover:bg-gray-600 underline rounded" onClick={handleLinkClick}>ID Finder</Link></li>
+                                <li><Link to="/passport-finder" className="block font-semibold px-4 py-2 hover:bg-gray-600 underline rounded" onClick={handleLinkClick}>Passport Finder</Link></li>
                                 <li><Link to="/kra-finder" className="block font-semibold px-4 py-2 hover:bg-gray-600 underline rounded" onClick={handleLinkClick}>KRA Finder</Link></li>
                             </ul>
                         )}
 
-                        <Link to="/passport-finder" className="px-4 py-2 flex gap-3 font-semibold text-xl" onClick={handleLinkClick}>
+                        <Link to="/applications" className="px-4 py-2 flex gap-3 font-semibold text-xl" onClick={handleLinkClick}>
                             <FaPassport />
-                            Passport
+                            Applications
                         </Link>
                         <Link to="/report" className="px-4 py-2 flex gap-3 font-semibold text-xl" onClick={handleLinkClick}>
                             <MdReport />

@@ -29,7 +29,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Header />} />
           <Route path="/id-finder" element={<IdFinder />} />
-          <Route path="/apply-id" element={<ApplyId />} />
+          <Route path="/applications" element={<ApplyId />} />
           <Route path="/new-id" element={<NewId />} />
           <Route path="/lost-id" element={<LostId />} />
           <Route path="/forms-upload" element={<FormsUpload />} />

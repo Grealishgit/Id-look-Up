@@ -1,117 +1,13 @@
 import express from 'express';
-import { poolPromise } from '../config/dbConfig.js';
-import sql from 'mssql';
+import { reportLostId, reportLostPassport } from '../Controllers/lostDocuments.js';
+import authenticateToken from '../middlewares/authUser.js';
+
 const router = express.Router();
-import cors from 'cors';
 
-router.post('/api/report', async (req, res) => {
-    const {
-        abstractNumber,
-        firstName,
-        middleName,
-        lastName,
-        idNumber,
-        lostCounty,
-        homeCounty,
-        email,
-        phoneNumber,
-    } = req.body;
+// POST request to report a lost ID
+router.post('/lost-id', reportLostId);
 
-    // Validation for required fields
-    if (
-        !abstractNumber ||
-        !firstName ||
-        !lastName ||
-        !idNumber ||
-        !lostCounty ||
-        !homeCounty ||
-        !email ||
-        !phoneNumber
-    ) {
-        return res.status(400).json({ message: 'All fields are required.' });
-    }
-
-    try {
-        const pool = await poolPromise;
-        const request = pool.request();
-
-        // Check if the abstract number already exists
-        const checkResult = await request
-            .input('abstractNumber', sql.NVarChar, abstractNumber)
-            .query(`
-                SELECT COUNT(*) AS count 
-                FROM Reports 
-                WHERE abstractNumber = @abstractNumber;
-            `);
-
-        if (checkResult.recordset[0].count > 0) {
-            return res
-                .status(400)
-                .json({ message: 'A report with this abstract number already exists.' });
-        }
-
-        // Insert the new report
-        request
-            .input('firstName', sql.NVarChar, firstName)
-            .input('middleName', sql.NVarChar, middleName)
-            .input('lastName', sql.NVarChar, lastName)
-            .input('idNumber', sql.NVarChar, idNumber)
-            .input('lostCounty', sql.NVarChar, lostCounty)
-            .input('homeCounty', sql.NVarChar, homeCounty)
-            .input('email', sql.NVarChar, email)
-            .input('phoneNumber', sql.NVarChar, phoneNumber);
-
-        await request.query(`
-            INSERT INTO Reports (  
-                abstractNumber,  
-                firstName,  
-                middleName,  
-                lastName,  
-                idNumber,  
-                lostCounty,  
-                homeCounty,  
-                email,  
-                phoneNumber,  
-                createdAt  
-            ) VALUES (  
-                @abstractNumber,  
-                @firstName,  
-                @middleName,  
-                @lastName,  
-                @idNumber,  
-                @lostCounty,  
-                @homeCounty,  
-                @email,  
-                @phoneNumber,  
-                GETDATE()  
-            );  
-        `);
-
-        res.status(201).json({ message: 'Report submitted successfully!' });
-    } catch (error) {
-        console.error('Error inserting report:', error);
-        res.status(500).json({ message: 'Failed to submit report. Please try again.' });
-    }
-});
-
-router.get('/api/check-abstract/:abstractNumber', async (req, res) => {
-    const { abstractNumber } = req.params;
-
-    try {
-        const pool = await poolPromise;  // Get database connection
-        const result = await pool.request()
-            .input('abstractNumber', sql.NVarChar, abstractNumber)
-            .query('SELECT COUNT(*) AS count FROM Reports WHERE abstractNumber = @abstractNumber'); // Assuming "Reports" is the table name
-
-        if (result.recordset[0].count > 0) {
-            return res.status(400).json({ message: 'Abstract number already exists.' });
-        } else {
-            return res.status(200).json({ message: 'Abstract number is available.' });
-        }
-    } catch (error) {
-        console.error('Error checking abstract number:', error);
-        return res.status(500).json({ message: 'Error checking abstract number.' });
-    }
-});
+//POST request to report a lost Passport
+router.post('/lost-passport', reportLostPassport)
 
 export default router;

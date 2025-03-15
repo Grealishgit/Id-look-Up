@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaHeart } from 'react-icons/fa';
 
 const Footer = () => {
     const token = localStorage.getItem('token');
@@ -59,8 +60,8 @@ const Footer = () => {
                     </div>
 
                     {/* Copyright Info */}
-                    <p className="text-gray-400 text-lg">
-                        &copy; 2024 ID Look-Up. All Rights Reserved.
+                    <p className="text-gray-400 flex gap-2 items-center text-lg">
+                        &copy; 2025 ID Look-Up. All Rights Reserved.Developed with  <FaHeart className='text-red-500' width={20} /> by HunterInc-Developers
                     </p>
                 </div>
             </div>

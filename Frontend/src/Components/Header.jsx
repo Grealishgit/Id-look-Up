@@ -14,7 +14,7 @@ const Header = () => {
 
     return (
         <div
-            className="pt-[20px] min-h-screen mb-2 bg-cover bg-center flex flex-col items-start justify-center w-full overflow-hidden"
+            className="pt-[20px] min-h-screen mb-2 mt-4 bg-cover bg-center flex flex-col items-start justify-center w-full overflow-hidden"
             style={{ backgroundImage: "url('/des3.png')" }}
             id="Header"
         >
@@ -36,8 +36,8 @@ const Header = () => {
                 {!token && (
                     <>
                         <p className='text-lg mt-2 text-gray-600 font-semibold'>
-                            Please <span className='text-red-600'>SIGN-UP </span> <br />
-                            or <span className='text-red-500'>LOGIN</span>  if you already created an account to explore more features.
+                            Please <span className='text-red-600 underline'>SIGN-UP </span> <br />
+                            or <span className='text-red-500 underline'>LOGIN</span>  if you already created an account to explore more features.
                         </p>
                     </>)}
                 <div className="text-center sm:text-center mt-8 flex justify-center sm:justify-start gap-4 items-center">

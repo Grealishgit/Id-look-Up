@@ -24,7 +24,7 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <div className="w-full overflow-hidden bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900">
+      <div className="w-full overflow-hidden">
         <Navbar />
         <Routes>
           <Route path="/" element={<Header />} />

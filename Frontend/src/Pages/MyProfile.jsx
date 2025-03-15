@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirecting after logout
 import { toast } from 'react-toastify';
+import { FaCircleUser } from "react-icons/fa6";
 
 const MyProfile = () => {
     const [user, setUser] = useState({
         fname: '',
         lname: '',
         email: '',
-        idNumber: '', // Dynamic value, update after fetching from the API
-        homeCounty: '', // Dynamic value, update after fetching from the API
-        phone: '', // Dynamic value, update after fetching from the API
+        idNumber: '',
+        homeCounty: '',
+        phone: '', 
     });
 
-    const [isEditing, setIsEditing] = useState(false); // State to control edit mode
-    const [editedUser, setEditedUser] = useState({ ...user }); // State to hold the edited user data
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedUser, setEditedUser] = useState({ ...user }); 
 
-    const navigate = useNavigate(); // Initialize navigate for redirecting after logout
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-            const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
+            const token = localStorage.getItem('token');
 
             if (!token) {
-                // If no token, redirect to login page
                 navigate('/login');
                 return;
             }
@@ -37,8 +37,8 @@ const MyProfile = () => {
 
                 if (response.ok) {
                     const userData = await response.json();
-                    setUser(userData); // Set the fetched user data
-                    setEditedUser(userData); // Set the edited user data to match
+                    setUser(userData);
+                    setEditedUser(userData);
                 } else {
                     toast.error('Failed to fetch user profile');
                 }
@@ -46,6 +46,7 @@ const MyProfile = () => {
                 toast.error('Error fetching profile data:', error);
             }
         };
+
 
         fetchUserProfile();
     }, [navigate]);
@@ -59,15 +60,15 @@ const MyProfile = () => {
     };
 
     const handleSaveChanges = () => {
-        setUser(editedUser); // Save the edited user data
-        localStorage.setItem('user', JSON.stringify(editedUser)); // Update localStorage with the new data
-        setIsEditing(false); // Exit edit mode
+        setUser(editedUser);
+        localStorage.setItem('user', JSON.stringify(editedUser));
+        setIsEditing(false); 
     };
 
     const handleLogout = () => {
         localStorage.removeItem('user');
-        localStorage.removeItem('token'); // Optional: Clear token if using JWT for authentication
-        navigate('/login'); // Redirect to login page
+        localStorage.removeItem('token');
+        navigate('/login'); 
     };
 
     return (
@@ -81,11 +82,16 @@ const MyProfile = () => {
             <div className="flex flex-col items-center max-w-md mx-auto mt-10 mb-2 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
                 <p className='text-center text-2xl font-semibold mt-2'>Personal <span className='text-blue-600'>Information</span> </p>
                 <div className="mb-4 mt-2">
-                    <img
-                        src="https://via.placeholder.com/150"
-                        alt="User Avatar"
-                        className="w-24 h-24 rounded-full border-2 items-center border-gray-300"
-                    />
+                    {user.profilePicture ? (
+                        <img
+                            src={user.profilePicture}
+                            alt="User Avatar"
+                            className="w-24 h-24 rounded-full border-2 border-gray-300"
+                        />
+                    ) : (
+                        <FaCircleUser className="w-24 h-24 text-gray-400 border-2 border-gray-300 rounded-full p-2" />
+                    )}
+
                 </div>
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-semibold text-gray-800">
@@ -119,7 +125,7 @@ const MyProfile = () => {
                         </p>
 
                         <p className="text-lg text-gray-700">
-                            <span className="font-medium">Phone:</span>{' '}
+                            <span className="font-medium">Phone Number:</span>{' '}
                             {isEditing ? (
                                 <input
                                     type="text"
@@ -179,7 +185,7 @@ const MyProfile = () => {
                             onClick={() => setIsEditing(true)}
                             className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none"
                         >
-                            Edit Profile
+                                Update Profile
                         </button>
                     )}
 

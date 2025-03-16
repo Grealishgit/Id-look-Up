@@ -31,7 +31,7 @@ const Navbar = () => {
     return (
         <div>
             {/* Navbar (Desktop & Mobile) */}
-            <nav className="bg-gray-700 text-white p-4 flex items-center fixed top-0 left-0 w-full z-50">
+            <nav className="bg-gray-800 text-white p-4 flex items-center fixed top-0 left-0 w-full z-50">
                 {/* Logo - Left */}
                 <div className="font-bold text-4xl">
                     <a href="/">ID <span className="text-green-600">Look</span>-<span className="text-red-600">Up</span>.</a>
@@ -123,7 +123,7 @@ const Navbar = () => {
                     </Link>
                 )} */}
 
-                <Link to="/" className="px-4 py-2 text-2xl flex gap-2 font-semibold" onClick={handleLinkClick}>
+                <Link to="/" className="px-4 py-2 text-2xl flex gap-2 items-center font-semibold" onClick={handleLinkClick}>
                     <FaHome width={20} />
                     Home
                 </Link>
@@ -166,15 +166,15 @@ const Navbar = () => {
 
                 {!token && (
                     <div className="flex flex-col items-start gap-4">
-                        <Link to="/login" className="px-7 py-2 flex gap-3  rounded font-semibold" onClick={handleLinkClick}>
+                        <Link to="/login" className="px-7 py-2 flex gap-3  text-xl rounded font-semibold" onClick={handleLinkClick}>
                             <MdLogin />
                             Login
                         </Link>
-                        <Link to="/sign-up" className="px-6 py-2 flex gap-3 rounded font-semibold" onClick={handleLinkClick}>
+                        <Link to="/sign-up" className="px-6 py-2 flex gap-3 text-xl rounded font-semibold" onClick={handleLinkClick}>
                             <FaFileSignature />
                             Sign Up
                         </Link>
-                        <Link to="/about" className="px-6 py-2 flex gap-3 rounded font-semibold" onClick={handleLinkClick}>
+                        <Link to="/about" className="px-6 py-2 flex gap-3 text-xl rounded font-semibold" onClick={handleLinkClick}>
                             <IoMdInformationCircle />
                             About Us
                         </Link>

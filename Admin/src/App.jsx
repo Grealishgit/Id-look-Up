@@ -1,19 +1,18 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
-import Dashboard from './pages/Dashboard'
-import Sidebar from './components/Sidebar'
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+
+import Dashboard from "./pages/Dashboard";
+import Layout from "./components/Layout"; // Ensure this is correct
 
 const App = () => {
   return (
-    <>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/sidebar' element={<Sidebar />} />
-      </Routes>
-    </>
-  )
-}
+    <Routes>
+      <Route element={<Layout />}>
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Dashboard />} />
+      </Route>
+    </Routes>
+  );
+};
 
-export default App
+export default App;

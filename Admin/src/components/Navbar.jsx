@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaMoon, FaShoppingCart, FaBell, FaCog } from "react-icons/fa";
-import { RiMenu2Fill, RiCloseFill } from "react-icons/ri";
+import { RiMenu2Fill, RiCloseFill, RiAdminLine } from "react-icons/ri";
 import { IoLanguage } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { LuExpand } from "react-icons/lu";
@@ -13,14 +13,34 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
     const navigate = useNavigate();
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [dateTime, setDateTime] = useState(new Date());
+    useEffect(() => {
+        const timer = setInterval(() => setDateTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const formatDate = (date) => {
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        return `${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')}, ${date.getFullYear()}`;
+    };
+
+    const formatTime = (date) =>
+        `${String(date.getHours()).padStart(2, "0")}:${String(
+            date.getMinutes()
+        ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
 
 
     return (
         <div className={`fixed top-0 left-0 ${isCollapsed ? "md:left-24" : "md:left-64"} right-0 flex justify-between items-center bg-white shadow-md px-4 md:px-10 p-4 transition-all duration-300 z-50`}>
             {/* Left Section */}
             <div className="flex items-center gap-3">
+
+
                 <button
-                    className="text-gray-600 cursor-pointer text-2xl flex items-center"
+                    className="text-gray-600 cursor-pointer mr-5 text-2xl flex items-center"
                     onClick={() => {
                         toggleSidebar();
                         toggleSidebarVisibility();
@@ -28,6 +48,8 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
                 >
                     {isSidebarOpen ? <RiMenu2Fill /> : <RiCloseFill />}
                 </button>
+
+
                 <div className="relative hidden sm:block">
                     <input
                         type="text"
@@ -36,6 +58,24 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-400" />
                 </div>
+
+
+                <div className="md:block hidden">
+                    {/* Middle: Admin Name */}
+                    <div className="text-lg flex items-center ml-20 gap-2 font-semibold">
+                        {/*  <RiAdminLine className="text-md items-center" /> */}
+                        {/* Admin: <span className="text-green-500">Hunter</span> */}
+                    </div>
+                </div>
+
+
+                <div className="md:block hidden">
+                    <div className="flex gap-3 items-center">
+                        <p className="text-orange-400 items-center font-bold text-2xl">{formatDate(dateTime)}</p>
+                        <h1 className="text-black text-2xl font-bold tracking-wide w-[90px]">{formatTime(dateTime)}</h1>
+                    </div>
+                </div>
+
             </div>
 
             {/* Right Section */}
@@ -62,8 +102,8 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
                     {isProfileOpen && (
                         <div className="absolute right-0 mt-2 w-60 bg-white shadow-lg rounded-lg py-2 overflow-visible">
                             <div className="px-4 py-2 text-center border-b">
-                                <p className="text-sm font-semibold">USER</p>
-                                <p className="text-blue-500 text-md">FlexiMula <span className="font-bold">AGENCIES</span></p>
+                                <p className="text-sm font-semibold">Admin</p>
+                                <p className="text-blue-500 font-bold text-md">ID-LOOK-<span className="font-bold">UP</span></p>
                             </div>
                             <MenuItem onClick={() => { navigate('/'); setIsProfileOpen(false); }} icon={<FiUser />} label="Profile" />
                             <MenuItem onClick={() => { navigate('/'); setIsProfileOpen(false); }} icon={<RiSettings2Line />} label="Settings" />

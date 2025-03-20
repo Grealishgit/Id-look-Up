@@ -45,7 +45,6 @@ const KraApplications = () => {
 
             {/* Table Section */}
             <TableCard />
-
         </div>
     );
 };

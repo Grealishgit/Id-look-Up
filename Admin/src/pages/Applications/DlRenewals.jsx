@@ -9,11 +9,11 @@ const DlRenewals = () => {
     ];
 
     const countrySales = [
-        { country: "France", sales: "5,932", trend: "up" },
-        { country: "Spain", sales: "5,383", trend: "down" },
-        { country: "Argentina", sales: "4,825", trend: "up" },
-        { country: "UAE", sales: "4,527", trend: "up" },
-        { country: "Germany", sales: "4,501", trend: "down" },
+        { country: "Kenya", sales: "5,932", trend: "up" },
+        { country: "Uganda", sales: "5,383", trend: "down" },
+        { country: "Tanzazania", sales: "4,825", trend: "up" },
+        { country: "Ethiopia", sales: "4,527", trend: "up" },
+        { country: "Rwanda", sales: "4,501", trend: "down" },
     ];
 
     const topCustomers = [

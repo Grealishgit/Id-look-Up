@@ -20,8 +20,7 @@ const LostPassports = () => {
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`px-6 py-2 text-sm mb-5 font-medium ${activeTab === tab ? "text-purple-600 border-b-2 border-purple-600" : "text-gray-500"
-                            }`}
-                    >
+                            }`}>                
                         {tab}
                     </button>
                 ))}

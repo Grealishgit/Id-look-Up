@@ -103,7 +103,7 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
                     >
                         <div
                             onClick={() => {
-                                navigate("/");
+                                navigate("/lost-id");
                                 closeSidebar();
                             }}
                             className="text-md font-semibold mt-2 mb-2 ml-5 hover:text-green-500"
@@ -112,7 +112,7 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
                         </div>
                         <div
                             onClick={() => {
-                                navigate("/");
+                                navigate("/lost-passports");
                                 closeSidebar();
                             }}
                             className="text-md font-semibold mt-2 mb-2 ml-5 hover:text-green-500"
@@ -121,7 +121,7 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
                         </div>
                         <div
                             onClick={() => {
-                                navigate("/");
+                                navigate("/lost-dl");
                                 closeSidebar();
                             }}
                             className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"

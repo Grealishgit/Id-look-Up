@@ -40,7 +40,13 @@ const DlRenewals = () => {
 
     return (
         <div className="p-6 mt-20 space-y-6">
-            <h2 className="text-xl font-semibold">DL Renewal  Stats</h2>
+
+            <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 mb-6">
+                <h1 className="text-2xl text-orange-500 font-semibold mb-4 md:mb-0">Driving License Renewals</h1>
+                <p className="text-md font-bold text-gray-500">
+                    Dashboard &raquo; <span className="text-green-500 underline cursor-pointer">Driving license</span>
+                </p>
+            </div>
             {/* Top Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (

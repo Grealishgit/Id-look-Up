@@ -4,7 +4,7 @@ const LostPassports = () => {
     const [activeTab, setActiveTab] = useState("Local");
 
     return (
-        <div className="p-6 mt-15 bg-gray-200 min-h-screen">
+        <div className="p-6 mt-15  min-h-screen">
             {/* Header */}
             <div className="flex justify-between items-center text-gray-700 mb-6">
                 <h1 className="text-2xl text-orange-500 font-semibold">Lost Passports</h1>

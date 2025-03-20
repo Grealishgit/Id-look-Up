@@ -29,7 +29,7 @@ const TableCard = () => {
     };
 
     return (
-        <div className="rounded-lg mt-20 shadow px-4">
+        <div className="mt-20 px-1">
 
             {/* Table Section */}
             <div className="p-4 bg-white rounded-lg mt-6 shadow">
@@ -37,7 +37,7 @@ const TableCard = () => {
                     <h2 className="text-lg font-semibold text-gray-700">ID Applications</h2>
                     <div className="flex flex-wrap space-x-3 items-center">
                         {/* Search Input */}
-                        <div className="relative w-full sm:w-auto">
+                        <div className="relative md:mb-0 mb-2 w-full sm:w-auto">
                             <input
                                 type="text"
                                 placeholder="Search Here"
@@ -46,7 +46,7 @@ const TableCard = () => {
                             <FaSearch className="absolute left-3 top-3 text-gray-400" />
                         </div>
                         {/* Sort Button */}
-                        <button className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center">
+                        <button className="bg-orange-600 text-white px-4 py-2  rounded-lg flex items-center">
                             Sort By <BsThreeDotsVertical className="ml-2" />
                         </button>
                     </div>

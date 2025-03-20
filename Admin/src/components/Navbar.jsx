@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaMoon, FaShoppingCart, FaBell, FaCog } from "react-icons/fa";
-import { RiMenu2Fill, RiCloseFill, RiAdminLine } from "react-icons/ri";
+import { RiMenu2Fill, RiCloseFill } from "react-icons/ri";
 import { IoLanguage } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { LuExpand } from "react-icons/lu";
@@ -33,8 +33,16 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
         ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
 
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
-        <div className={`fixed top-0 left-0 ${isCollapsed ? "md:left-24" : "md:left-64"} right-0 flex justify-between items-center bg-white shadow-md px-4 md:px-10 p-4 transition-all duration-300 z-50`}>
+        <div className={`fixed  top-0 left-0 ${isCollapsed ? "md:left-24" : "md:left-64"} right-0 flex justify-between items-center bg-white shadow-md px-4 md:px-10 p-4 transition-all duration-300 z-40`}>
             {/* Left Section */}
             <div className="flex items-center gap-3">
 
@@ -46,9 +54,8 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
                         toggleSidebarVisibility();
                     }}
                 >
-                    {isSidebarOpen ? <RiMenu2Fill /> : <RiCloseFill />}
+                    {isSidebarOpen || isMobile ? <RiMenu2Fill /> : <RiCloseFill />}
                 </button>
-
 
                 <div className="relative hidden sm:block">
                     <input

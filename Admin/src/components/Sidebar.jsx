@@ -1,18 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 import { MdAccountBalance, MdDashboard, MdOutlineQuestionAnswer } from "react-icons/md";
 import { GoPeople } from "react-icons/go";
-
-import { RiMoneyDollarBoxFill } from "react-icons/ri";
-
+import { RiCloseFill, RiMoneyDollarBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
     const [openMenus, setOpenMenus] = useState({});
+    const sidebarRef = useRef(null);
 
     const toggleMenu = (menu) => {
         setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
     };
+
+    // **Close sidebar when clicking outside**
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target) &&
+                window.innerWidth < 768 // Only close sidebar on small screens
+            ) {
+                closeSidebar();
+            }
+        };
+
+        if (isSidebarOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isSidebarOpen]);
+
+    const navigate = useNavigate();
 
     const NavItem = ({ icon, label, dropdown, isOpen, onClick, children }) => (
         <div>
@@ -23,21 +45,30 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
             >
                 <div className="w-6 flex justify-start">{icon}</div>
                 {(!isCollapsed || isSidebarOpen) && <span>{label}</span>}
-                {dropdown && (!isCollapsed || isSidebarOpen) && <span className="ml-auto">{isOpen ? <FaAngleUp /> : <FaAngleDown />}</span>}
+                {dropdown && (!isCollapsed || isSidebarOpen) && (
+                    <span className="ml-auto">{isOpen ? <FaAngleUp /> : <FaAngleDown />}</span>
+                )}
             </div>
             {(!isCollapsed || isSidebarOpen) && isOpen && <div className="ml-6 text-gray-400">{children}</div>}
         </div>
     );
 
-    const navigate = useNavigate();
-
     return (
         <div
+            ref={sidebarRef}
             className={`bg-[#1B1E32] text-white fixed top-0 left-0 h-screen transition-all duration-300 z-50
-            ${isCollapsed && !isSidebarOpen ? "w-[6rem]" : "w-64"}
-            ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-            md:relative md:translate-x-0 md:block overflow-hidden`}
+    ${isCollapsed && !isSidebarOpen ? "w-[6rem]" : "w-64"}
+    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+    md:relative md:translate-x-0 md:block overflow-hidden`}
         >
+            {/* Close Icon */}
+            <button
+                className="absolute top-4 right-4 text-white z-60 text-2xl md:hidden"
+                onClick={() => closeSidebar()}
+            >
+                <RiCloseFill />
+            </button>
+
             {/* Fixed Logo Section */}
             <div className="p-5 border-b border-gray-500 sticky top-0 bg-[#1B1E32] z-10">
                 <div className={`flex items-center gap-3 ${isCollapsed ? "justify-center" : ""}`}>
@@ -45,7 +76,10 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
                         {isCollapsed ? (<img onClick={() => { navigate("/dashboard"); closeSidebar(); }}                                                                               
                                 src={null} alt="logo" className="w-8 object-contain" />
                         ) : (
-                                <img onClick={() => { navigate("/dashboard"); closeSidebar(); }} src={null} alt="logo" className="h-8 object-contain" />                                                                                                               
+
+                                <a onClick={() => { navigate("/dashboard"); closeSidebar(); }} className="font-bold ml-10 text-3xl" href="">
+                                    ID-<span className=" text-orange-500 underline">LOOK</span>-UP
+                                </a>
                         )}
                     </div>
                 </div>
@@ -53,8 +87,8 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
 
             {/* Scrollable Navigation */}
             <div className="overflow-y-auto cursor-pointer scrollbar-hide h-[calc(100vh-80px)] p-5">
-                <div className="mt-3 mb-2">
-                    <p className="text-[10px] font-bold">MAIN</p>
+                <div className="mt-3">
+                    <p className="text-[20px] text-orange-500 ml-5 font-bold">ADMIN DASHBOARD</p>
                 </div>
 
                 <nav className="space-y-4">

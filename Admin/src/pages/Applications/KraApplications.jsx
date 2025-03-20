@@ -13,7 +13,7 @@ const KraApplications = () => {
     ];
 
     return (
-        <div className="rounded-lg mt-20 shadow px-4">
+        <div className="mt-20  px-4">
             <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 mb-6">
                 <h1 className="text-2xl text-orange-500 font-semibold mb-4 md:mb-0">KRA Applications</h1>
                 <p className="text-md font-bold text-gray-500">

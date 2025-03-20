@@ -3,7 +3,7 @@ import TableCard from "../../components/TableCard";
 
 const LostDL = () => {
     return (
-        <div className="p-6 mt-15 bg-gray-200 min-h-screen">
+        <div className="p-6 mt-15  min-h-screen">
             {/* Page Header */}
             <div className="flex flex-col md:flex-row justify-between items-center text-gray-700 mb-6">
                 <h1 className="text-2xl text-orange-500 font-semibold mb-4 md:mb-0">Lost Driving License</h1>

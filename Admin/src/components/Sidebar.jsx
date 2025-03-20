@@ -73,11 +73,11 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
             <div className="p-5 border-b border-gray-500 sticky top-0 bg-[#1B1E32] z-10">
                 <div className={`flex items-center gap-3 ${isCollapsed ? "justify-center" : ""}`}>
                     <div className="w-auto h-8 flex items-left justify-center">
-                        {isCollapsed ? (<img onClick={() => { navigate("/dashboard"); closeSidebar(); }}                                                                               
+                        {isCollapsed ? (<img onClick={() => { navigate("/"); closeSidebar(); }}                                                                               
                                 src={null} alt="logo" className="w-8 object-contain" />
                         ) : (
 
-                                <a onClick={() => { navigate("/dashboard"); closeSidebar(); }} className="font-bold ml-10 text-3xl" href="">
+                                <a onClick={() => { navigate("/"); closeSidebar(); }} className="font-bold ml-10 text-3xl" href="">
                                     ID-<span className=" text-orange-500 underline">LOOK</span>-UP
                                 </a>
                         )}

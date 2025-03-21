@@ -200,12 +200,16 @@ const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
                         >
                             - DL collected
                         </div>
+
+
                     </NavItem>
 
 
                     <NavItem icon={<MdOutlineQuestionAnswer />}
                         label="Document Entry" dropdown isOpen={openMenus.trivia}
                         onClick={() => toggleMenu("trivia")}>
+                        <div onClick={() => { navigate('/'); closeSidebar(); }} className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500">
+                            - IDs</div>
                         <div onClick={() => { navigate('/'); closeSidebar(); }} className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500">
                             - Passports</div>
                         <div onClick={() => { navigate('/'); closeSidebar(); }} className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500">

@@ -18,6 +18,7 @@ import NewId from './Forms/NewId';
 import LostId from './Forms/LostId';
 import FormsUpload from './Forms/FormsUpload';
 import MyProfile from './Pages/MyProfile';
+import LoadingSpinner from './Components/LoadingSpinner';
 
 
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/passport-report" element={<ReportPassport />} />
+          <Route path="/loading" element={<LoadingSpinner />} />
         </Routes>
         <Footer />
       </div>

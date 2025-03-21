@@ -100,7 +100,7 @@ const ReportPassport = () => {
                         </div>
                     </div>
 
-                    <p className='text-red-400 text-center mt-2 mb-3 text-sm font-semibold'>
+                    <p className='text-red-600 text-center mt-2 mb-3 text-sm md:text-lg font-semibold'>
                         Please fill with "N/A" if not applicable or available
                     </p>
 

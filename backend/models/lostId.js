@@ -14,7 +14,7 @@ const lostSchema = new mongoose.Schema({
     phoneNumber: {
         type: String,
         required: true,
-        match: [/^(\+254|0)[7]\d{8}$/, "Invalid phone number format"]
+        match: [/^(?:\+254|0)7\d{8}$/, "Invalid phone number format"]
     },
     lostCounty: { type: String, required: true },
     homeCounty: { type: String, required: true }

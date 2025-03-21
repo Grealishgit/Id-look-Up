@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoClose } from "react-icons/io5";
 import { RiMenu2Line } from "react-icons/ri";
 import { FaAngleDown, FaFileSignature, FaHome } from "react-icons/fa";
@@ -12,21 +12,45 @@ import { MdFindInPage, MdContactMail, MdReport, MdLogin, MdWbSunny, MdSettings }
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isIdDropdownOpen, setIsIdDropdownOpen] = useState(false);
+    const [user, setUser] = useState(null);
 
     const token = localStorage.getItem('token');
+    const navigate = useNavigate()
 
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-    };
+    const toggleMobileMenu = () => { setIsMobileMenuOpen(!isMobileMenuOpen) };
+    const toggleIdDropdown = () => { setIsIdDropdownOpen(!isIdDropdownOpen) };
 
-    const toggleIdDropdown = () => {
-        setIsIdDropdownOpen(!isIdDropdownOpen);
-    };
 
     const handleLinkClick = () => {
         setIsMobileMenuOpen(false);
         setIsIdDropdownOpen(false);
     };
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+
+
+            try {
+                const response = await fetch('http://localhost:4000/userdata', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data.user);
+                }
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
+
 
     return (
         <div>
@@ -79,11 +103,13 @@ const Navbar = () => {
                             className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1"
                             aria-label="Notifications"
                         />
-                        {/* User Profile Icon */}
+                        {/* Profile Picture */}
                         <Link to="/my-profile" aria-label="My Profile">
-                            <FaCircleUser
-                                className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1"
-                            />
+                            {user?.image ? (
+                                <img src={user.image} alt="Profile" className="w-10 h-10 border-2 border-gray-500 hover:border-white cursor-pointer rounded-full" />
+                            ) : (
+                                <FaCircleUser className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1" />
+                            )}
                         </Link>
                         <MdSettings className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1"
                             aria-label="Settings" />
@@ -95,8 +121,12 @@ const Navbar = () => {
                 <div className="lg:hidden flex flex-row mt-1 gap-3 ml-4">
                     {/* User Icon (Always Visible on Small Screens) */}
                     {token &&
-                        <Link to="/my-profile" className="mb-4" onClick={handleLinkClick}>
-                            <FaCircleUser className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1" />
+                        <Link to="/my-profile" aria-label="My Profile">
+                            {user?.image ? (
+                                <img src={user.image} alt="Profile" className="w-10 h-10 border-2 border-gray-500 hover:border-white cursor-pointer rounded-full" />
+                            ) : (
+                                <FaCircleUser className="w-10 h-10 text-white border-2 border-gray-500 hover:border-white cursor-pointer rounded-full p-1" />
+                            )}
                         </Link>
                     }
                     {token &&

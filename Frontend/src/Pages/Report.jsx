@@ -15,6 +15,14 @@ const Report = () => {
         homeCounty: '',
     });
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        toast.error("You are not authenticated");
+        setLoading(false);
+        return;
+    }
+
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -32,8 +40,9 @@ const Report = () => {
         try {
             const response = await axios.post('http://localhost:4000/lost-id', formData, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
+                body: formData,
             });
 
             toast.success(response.data.message);
@@ -103,8 +112,9 @@ const Report = () => {
                             />
                         </div>
                     </div>
-
+                    <h3 className='text-red-600 font-bold md:text-lg text-sm text-center mb-2'>If one of the name field is not available, fill with "N/A"</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
                         <div>
                             <label className="block font-semibold text-gray-700">First Name</label>
                             <input

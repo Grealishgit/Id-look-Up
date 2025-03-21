@@ -12,7 +12,7 @@ export const reportLostId = async (req, res) => {
         lostCounty, homeCounty
     } = req.body;
 
-    // ✅ Improved validation
+
     if (!abstractNumber || !idNumber || !fname || !email || !phoneNumber || !lostCounty || !homeCounty) {
         return res.status(400).json({ success: false, message: "Missing required details" });
     }
@@ -79,3 +79,33 @@ export const reportLostPassport = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error" });
     }
 }
+
+// Get all reported lost IDs
+export const reportedIds = async (req, res) => {
+    try {
+        const lostIds = await LostId.find();
+        return res.status(200).json({
+            success: true,
+            count: lostIds.length,
+            data: lostIds
+        });
+    } catch (error) {
+        console.error("Error fetching reported lost IDs:", error);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+// Get all reported lost passports
+export const reportedPassports = async (req, res) => {
+    try {
+        const lostPassports = await lostPassport.find();
+        return res.status(200).json({
+            success: true,
+            count: lostPassports.length,
+            data: lostPassports
+        });
+    } catch (error) {
+        console.error("Error fetching reported lost passports:", error);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};

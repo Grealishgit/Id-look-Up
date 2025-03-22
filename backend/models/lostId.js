@@ -18,7 +18,8 @@ const lostSchema = new mongoose.Schema({
     },
     lostCounty: { type: String, required: true },
     homeCounty: { type: String, required: true }
-}, { timestamps: true });
+},
+    { timestamps: true });
 
 const lostId = mongoose.model("lostId", lostSchema);
 export default lostId;

@@ -4,7 +4,8 @@ import { connectDB } from "./config/dbConfig.js";
 import "dotenv/config";
 import userRoutes from "./Routes/userRoute.js";
 import reportRoutes from "./Routes/reportRoute.js"
-import authenticateToken from "./middlewares/authUser.js"; // Import JWT middleware
+import applyRoutes from "./Routes/applyRoute.js"
+import authenticateToken from "./middlewares/authUser.js";
 
 // App config
 const app = express();
@@ -39,9 +40,9 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // API Endpoints
-app.use("/auth", userRoutes);
 app.use("/", userRoutes);
 app.use("/", reportRoutes)
+app.use("/", applyRoutes)
 
 // Protected Route Example
 app.get("/dashboard", authenticateToken, (req, res) => {

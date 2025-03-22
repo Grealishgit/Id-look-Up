@@ -1,36 +1,35 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const FormsUpload = () => {
     const [files, setFiles] = useState({
-        idForm: null,
-        birthCertificate: null,
-        additionalDocs: [],
+        formA: null,
+        formB: null,
+        formC: null,
     });
     const [personalDetails, setPersonalDetails] = useState({
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        phoneNumber: "",
+        serialNo: "",
+        fname: "",
+        mname: "",
+        lname: "",
+        phone: "",
         email: "",
-        addressLine: "",
+        address: "",
     });
     const [error, setError] = useState("");
 
     const handleFileChange = (e, type) => {
         const file = e.target.files[0];
         if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                setError("File size should not exceed 5MB.");
-                return;
-            }
-            if (!["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
-                setError("Only PDF, JPEG, or PNG files are allowed.");
+            if (!["application/pdf"].includes(file.type)) {
+                setError("Only PDF files are allowed.");
                 return;
             }
             setError("");
             setFiles((prev) => ({
                 ...prev,
-                [type]: type === "additionalDocs" ? [...prev.additionalDocs, file] : file,
+                [type]: file,
             }));
         }
     };
@@ -43,17 +42,81 @@ const FormsUpload = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!files.idForm || !files.birthCertificate) {
-            setError("Please upload all mandatory documents.");
+
+        // Validate mandatory fields
+        if (!files.formA || !files.formB || !files.formC) {
+            toast.error("Please upload all mandatory documents.");
             return;
         }
+
+        // Validate personal details
+        const { serialNo, fname, mname, lname, phone, email, address } = personalDetails;
+        if (!serialNo || !fname || !lname || !phone || !email || !address) {
+            toast.error("Please fill in all mandatory fields.");
+            return;
+        }
+
         setError("");
-        console.log("Submitted files:", files);
-        console.log("Personal details:", personalDetails);
-        alert("Forms uploaded successfully!");
-    };
+
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("serialNo", serialNo);
+        formData.append("fname", fname);
+        formData.append("mname", mname);
+        formData.append("lname", lname);
+        formData.append("phone", phone);
+        formData.append("email", email);
+        formData.append("address", address);
+        formData.append("formA", files.formA);
+        formData.append("formB", files.formB);
+        formData.append("formC", files.formC);
+
+
+
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                toast.error("You must be logged in to submit the form.");
+                return;
+            }
+
+            const response = await axios.post("http://localhost:4000/upload-forms", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (response.status === 201) {
+                toast.success("Forms uploaded successfully!");
+                setPersonalDetails({
+                    serialNo: "",
+                    fname: "",
+                    mname: "",
+                    lname: "",
+                    phone: "",
+                    email: "",
+                    address: "",
+                });
+                setFiles({
+                    formA: null,
+                    formB: null,
+                    formC: null,
+                });
+            }
+        } catch (error) {
+            console.error("Upload Error:", error);
+
+            // If the response exists and it's a 400 error for duplicate forms
+            if (error.response && error.response.status === 400) {
+                toast.error(error.response.data.message || "Forms already uploaded for this serial number.");
+            } else {
+                toast.error("An error occurred. Please try again.");
+            }
+        }
+    }
 
     return (
         <div className="min-h-screen max-w-screen-full bg-gray-200 mt-20 py-8 px-4">
@@ -81,13 +144,26 @@ const FormsUpload = () => {
                     {/* Personal Details Section */}
                     <div className="mb-6">
                         <h2 className="text-lg font-semibold mb-4">Personal Details</h2>
+                        <div>
+                            <label className="block text-gray-700">Serial Number</label>
+                            <input
+                                type="text"
+                                placeholder="Serial Number"
+                                name="serialNo"
+                                value={personalDetails.serialNo}
+                                onChange={handlePersonalDetailsChange}
+                                className="w-full p-2 border mb-5 border-gray-300 rounded"
+                                required
+                            />
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                             <div>
                                 <label className="block text-gray-700">First Name</label>
                                 <input
                                     type="text"
-                                    name="firstName"
-                                    value={personalDetails.firstName}
+                                    name="fname"
+                                    placeholder="First Name"
+                                    value={personalDetails.fname}
                                     onChange={handlePersonalDetailsChange}
                                     className="w-full p-2 border border-gray-300 rounded"
                                     required
@@ -97,8 +173,9 @@ const FormsUpload = () => {
                                 <label className="block text-gray-700">Middle Name</label>
                                 <input
                                     type="text"
-                                    name="middleName"
-                                    value={personalDetails.middleName}
+                                    name="mname"
+                                    placeholder="Middle Name"
+                                    value={personalDetails.mname}
                                     onChange={handlePersonalDetailsChange}
                                     className="w-full p-2 border border-gray-300 rounded"
                                 />
@@ -107,8 +184,9 @@ const FormsUpload = () => {
                                 <label className="block text-gray-700">Last Name</label>
                                 <input
                                     type="text"
-                                    name="lastName"
-                                    value={personalDetails.lastName}
+                                    name="lname"
+                                    placeholder="Last Name"
+                                    value={personalDetails.lname}
                                     onChange={handlePersonalDetailsChange}
                                     className="w-full p-2 border border-gray-300 rounded"
                                     required
@@ -120,8 +198,9 @@ const FormsUpload = () => {
                                 <label className="block text-gray-700">Phone Number</label>
                                 <input
                                     type="tel"
-                                    name="phoneNumber"
-                                    value={personalDetails.phoneNumber}
+                                    placeholder="Phone Number"
+                                    name="phone"
+                                    value={personalDetails.phone}
                                     onChange={handlePersonalDetailsChange}
                                     className="w-full p-2 border border-gray-300 rounded"
                                     required
@@ -132,6 +211,7 @@ const FormsUpload = () => {
                                 <input
                                     type="email"
                                     name="email"
+                                    placeholder="Email"
                                     value={personalDetails.email}
                                     onChange={handlePersonalDetailsChange}
                                     className="w-full p-2 border border-gray-300 rounded"
@@ -142,8 +222,9 @@ const FormsUpload = () => {
                                 <label className="block text-gray-700">Address Line</label>
                                 <input
                                     type="text"
-                                    name="addressLine"
-                                    value={personalDetails.addressLine}
+                                    placeholder="Address Line"
+                                    name="address"
+                                    value={personalDetails.address}
                                     onChange={handlePersonalDetailsChange}
                                     className="w-full p-2 border border-gray-300 rounded"
                                     required
@@ -155,52 +236,54 @@ const FormsUpload = () => {
                     {/* File Upload Sections */}
                     <div className="mb-4">
                         <label className="block text-gray-700 font-medium mb-2">
-                            Upload ID Form (Mandatory)
+                            Upload Form (A1) (Mandatory)
                         </label>
                         <input
                             type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            onChange={(e) => handleFileChange(e, "idForm")}
+                            name="formA"
+                            accept=".pdf"
+                            onChange={(e) => handleFileChange(e, "formA")}
                             className="w-full p-2 border border-gray-300 rounded-md"
                             required
                         />
-                        {files.idForm && (
+                        {files.formA && (
                             <p className="text-sm text-green-600 mt-1">
-                                File uploaded: {files.idForm.name}
+                                File uploaded: {files.formA.name}
                             </p>
                         )}
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 font-medium mb-2">
-                            Upload Birth Certificate (Mandatory)
+                            Upload Form (B1) (Mandatory)
                         </label>
                         <input
                             type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            onChange={(e) => handleFileChange(e, "birthCertificate")}
+                            name="formB"
+                            accept=".pdf"
+                            onChange={(e) => handleFileChange(e, "formB")}
                             className="w-full p-2 border border-gray-300 rounded-md"
                             required
                         />
-                        {files.birthCertificate && (
+                        {files.formB && (
                             <p className="text-sm text-green-600 mt-1">
-                                File uploaded: {files.birthCertificate.name}
+                                File uploaded: {files.formB.name}
                             </p>
                         )}
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 font-medium mb-2">
-                            Upload Additional Documents (Optional)
+                            Upload Form (C1) (Mandatory)
                         </label>
                         <input
                             type="file"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            multiple
-                            onChange={(e) => handleFileChange(e, "additionalDocs")}
+                            name="formC"
+                            accept=".pdf"
+                            onChange={(e) => handleFileChange(e, "formC")}
                             className="w-full p-2 border border-gray-300 rounded-md"
                         />
-                        {files.additionalDocs.length > 0 && (
+                        {files.formC && (
                             <p className="text-sm text-green-600 mt-1">
-                                {files.additionalDocs.length} files uploaded
+                                File uploaded: {files.formC.name}
                             </p>
                         )}
                     </div>

@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const counties = [
     'Baringo', 'Bomet', 'Bungoma', 'Busia', 'Elgeyo Marakwet', 'Embu', 'Garissa', 'Homa Bay', 'Isiolo',
     'Kajiado', 'Kakamega', 'Kericho', 'Kiambu', 'Kilifi', 'Kirinyaga', 'Kisii', 'Kisumu', 'Kitui',
@@ -8,7 +12,6 @@ const counties = [
     'Nyeri', 'Zanzibar'
 ];
 
-// Sample mapping of counties to sub-counties (example)
 const countySubCounties = {
     Nairobi: ['Kasarani', 'Starehe', 'Westlands', 'Lang’ata'],
     Kakamega: ['Kakamega Central', 'Kakamega North', 'Kakamega South', 'Mumias-East', 'Mumias-West', 'Khayega', 'Khwisero'],
@@ -17,33 +20,110 @@ const countySubCounties = {
     // Add other counties with their sub-counties as needed
 };
 
-const handleCountyChange = (e) => {
-    const county = e.target.value;
-    setSelectedCounty(county);
-    setSubCounties(countySubCounties[county] || []); // Set sub-counties based on selected county
-};
 const LostId = () => {
     const [image, setImage] = useState(null);
     const [selectedCounty, setSelectedCounty] = useState('');
     const [subCounties, setSubCounties] = useState([]);
+    const [formData, setFormData] = useState({
+        idNumber: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        dob: '',
+        county: '',
+        subCounty: '',
+        constituency: '',
+        ward: '',
+        passportPhoto: null,
+    });
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
             setImage(URL.createObjectURL(file));
+            setFormData({ ...formData, passportPhoto: file });
         }
-    }
+    };
+
+    const handleCountyChange = (e) => {
+        const county = e.target.value;
+        setSelectedCounty(county);
+        setSubCounties(countySubCounties[county] || []);
+        setFormData({ ...formData, county });
+    };
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData({ ...formData, [id]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            toast.error('You must be logged in to apply for a lost ID.');
+            return;
+        }
+
+        const data = new FormData();
+        data.append("idNo", formData.idNumber);
+        data.append("fname", formData.firstName);
+        data.append("mname", formData.middleName);
+        data.append("lname", formData.lastName);
+        data.append("dob", formData.dob);
+        data.append("County", formData.county);
+        data.append("SubCounty", formData.subCounty);
+        data.append("Constituency", formData.constituency);
+        data.append("Ward", formData.ward);
+        data.append("passportPhoto", formData.passportPhoto); // Ensure this matches backend
+
+        try {
+            const response = await axios.post('http://localhost:4000/apply-lostId', data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 201) {
+                toast.success(response.data.message || 'Application submitted successfully!');
+                setFormData({
+                    idNumber: '',
+                    firstName: '',
+                    middleName: '',
+                    lastName: '',
+                    dob: '',
+                    county: '',
+                    subCounty: '',
+                    constituency: '',
+                    ward: '',
+                    passportPhoto: null,
+                });
+                setImage(null);
+                setSelectedCounty('');
+                setSubCounties([]);
+            } else {
+                toast.error(response.data.message || 'Failed to submit application. Please try again.');
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'An error occurred. Please try again.');
+            console.error(error);
+        }
+    };
+
+
     return (
         <div className="max-w-screen-full mt-10 mx-auto py-12 px-4 bg-teal-100 min-h-screen">
+            <ToastContainer />
             <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
                 Apply <span className="text-green-500">For <span className='text-red-500'>A Lost ID</span> </span>
             </h1>
             <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-8">
-                Please enter your details below to apply for  your lost ID/Maisha Number.
+                Please enter your details below to apply for your lost ID/Maisha Number.
             </p>
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-[700px] mx-auto">
                 {/* Image Upload */}
-
                 <div className="flex justify-center mb-6">
                     {image ? (
                         <img src={image} alt="Uploaded" className="w-32 h-32 object-cover rounded-full" />
@@ -57,24 +137,28 @@ const LostId = () => {
                 <label htmlFor='passportPhoto' className='block text-gray-700 mb-2'>Passport-sized Photo</label>
                 <input
                     type="file"
+                    id="passportPhoto"
                     onChange={handleImageUpload}
                     className="mb-6 w-full py-2 px-4 border border-gray-300 rounded-md"
                     required
                 />
 
                 {/* Form Fields */}
-                <div>
-                    <label htmlFor="idNumber" className="block text-gray-700">ID/Maisha Number</label>
-                    <input
-                        type="text"
-                        id="idNumber"
-                        className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
-                        placeholder="12345678"
-                        required
-                    />
-                </div>
-                <form>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="idNumber" className="block text-gray-700">ID/Maisha Number</label>
+                        <input
+                            type="text"
+                            id="idNumber"
+                            className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
+                            placeholder="12345678"
+                            value={formData.idNumber}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
+                    <div className="grid grid-cols-1 mt-4 sm:grid-cols-3 gap-6 mb-6">
+
                         <div>
                             <label htmlFor="firstName" className="block text-gray-700">First Name</label>
                             <input
@@ -82,6 +166,8 @@ const LostId = () => {
                                 id="firstName"
                                 className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
                                 placeholder="Abdul"
+                                value={formData.firstName}
+                                onChange={handleInputChange}
                                 required
                             />
                         </div>
@@ -92,6 +178,8 @@ const LostId = () => {
                                 id="middleName"
                                 className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
                                 placeholder="Kiprotich"
+                                value={formData.middleName}
+                                onChange={handleInputChange}
                                 required
                             />
                         </div>
@@ -102,6 +190,8 @@ const LostId = () => {
                                 id="lastName"
                                 className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
                                 placeholder="Omondi"
+                                value={formData.lastName}
+                                onChange={handleInputChange}
                                 required
                             />
                         </div>
@@ -117,6 +207,9 @@ const LostId = () => {
                                 type="date"
                                 id="dob"
                                 className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
+                                value={formData.dob}
+                                onChange={handleInputChange}
+                                required
                             />
                         </div>
                         <div>
@@ -126,6 +219,7 @@ const LostId = () => {
                                 className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
                                 onChange={handleCountyChange}
                                 value={selectedCounty}
+                                required
                             >
                                 <option value="">Select County</option>
                                 {counties.map((county, index) => (
@@ -141,6 +235,9 @@ const LostId = () => {
                             <select
                                 id="subCounty"
                                 className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
+                                value={formData.subCounty}
+                                onChange={handleInputChange}
+                                required
                             >
                                 <option value="">Select Sub-County</option>
                                 {subCounties.map((subCounty, index) => (
@@ -155,6 +252,8 @@ const LostId = () => {
                                 id="constituency"
                                 className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
                                 placeholder="Westlands"
+                                value={formData.constituency}
+                                onChange={handleInputChange}
                                 required
                             />
                         </div>
@@ -167,6 +266,8 @@ const LostId = () => {
                             id="ward"
                             className="w-full py-2 px-4 border border-gray-300 rounded-md mt-2"
                             placeholder="Parklands"
+                            value={formData.ward}
+                            onChange={handleInputChange}
                             required
                         />
                     </div>
@@ -188,7 +289,7 @@ const LostId = () => {
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default LostId
+export default LostId;

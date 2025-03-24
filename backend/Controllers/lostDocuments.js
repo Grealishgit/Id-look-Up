@@ -1,8 +1,6 @@
 import LostId from "../models/lostId.js";
 import lostPassport from "../models/lostPassport.js";
 
-
-
 export const reportLostId = async (req, res) => {
     const {
         abstractNumber,

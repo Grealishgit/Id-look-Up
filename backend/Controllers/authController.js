@@ -74,8 +74,6 @@ export const login = async (req, res) => {
 };
 
 
-
-
 export const updateUserProfile = async (req, res) => {
     try {
         const userId = req.user._id;

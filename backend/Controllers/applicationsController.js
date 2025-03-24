@@ -21,8 +21,8 @@ export const applyLostId = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ message: "Image is required" });
         }
-
-        const imageFile = req.file; // Get the uploaded file from Multer
+        // Get the uploaded file from Multer
+        const imageFile = req.file; 
 
         let imageUrl = null;
 
@@ -41,14 +41,14 @@ export const applyLostId = async (req, res) => {
 
                 uploadStream.end(imageFile.buffer); // Send the file buffer to Cloudinary
             });
-
-            imageUrl = result.secure_url; // Get the uploaded image URL
+            // Get the uploaded image URL
+            imageUrl = result.secure_url; 
         }
 
         // Save to database
         const newApplication = new ApplyLostId({
             idNo: req.body.idNo,
-            image: imageUrl, // Store Cloudinary image URL
+            image: imageUrl, 
             fname: req.body.fname,
             mname: req.body.mname,
             lname: req.body.lname,
@@ -57,7 +57,7 @@ export const applyLostId = async (req, res) => {
             SubCounty: req.body.SubCounty,
             Constituency: req.body.Constituency,
             Ward: req.body.Ward,
-            user: req.user.id, // Ensure `req.user` exists from authentication middleware
+            user: req.user.id, 
         });
 
         await newApplication.save();
@@ -81,7 +81,7 @@ export const getUserLostIdApplications = async (req, res) => {
 
 export const getAllLostIdApplications = async (req, res) => {
     try {
-        const applications = await ApplyLostId.find(); // No user filter
+        const applications = await ApplyLostId.find(); 
         res.status(200).json({ applications });
     } catch (error) {
         console.error("Error getting all applications:", error);
@@ -91,7 +91,6 @@ export const getAllLostIdApplications = async (req, res) => {
 
 
 //After implementing the Admin section, the code will look like this:
-
 /* export const getLostIdApplications = async (req, res) => {
     try {
         let applications;
@@ -171,8 +170,6 @@ export const userUploadsForms = async (req, res) => {
         res.status(500).json({ message: "Server error. Please try again." });
     }
 };
-
-
 
 // Get forms uploaded by a specific user
 export const getUserUploadedForms = async (req, res) => {

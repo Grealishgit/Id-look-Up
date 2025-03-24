@@ -19,7 +19,7 @@ const authenticateToken = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        req.user = user; // Attach user to request
+        req.user = user; 
         next();
     } catch (error) {
         return res.status(401).json({ success: false, message: 'Invalid or expired token' });

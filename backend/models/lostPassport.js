@@ -10,9 +10,6 @@ const userSchema = new mongoose.Schema({
     phoneNumber: { type: Number, required: true },
     lostCounty: { type: String, required: true },
     homeCounty: { type: String, required: true },
-
-
-
 });
 const lostPassport = mongoose.model('lostPassport', userSchema)
 export default lostPassport;

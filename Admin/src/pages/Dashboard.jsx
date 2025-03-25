@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiUser, FiEye, FiBarChart2 } from "react-icons/fi";
-import { BsGraphUp } from "react-icons/bs";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 import { Doughnut, Line } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 import DashboardCard from "./TableCards/RecentUserCard";
@@ -10,7 +10,14 @@ import axios from "axios";
 import RecentReportsCard from "./TableCards/RecentReportsCard";
 import RecentApplicationsCard from "./TableCards/RecentApplicationsCard";
 
-// Sample Data for Doughnut Chart
+const data = [
+    { county: "Nairobi", age: 45 },
+    { county: "Mombasa", age: 38 },
+    { county: "Kisumu", age: 52 },
+    { county: "Nakuru", age: 60 },
+    { county: "Eldoret", age: 41 },
+    { county: "Others", age: 35 }
+];
 
 
 
@@ -56,7 +63,10 @@ const Dashboard = () => {
         ],
     };
     const [activeTab, setActiveTab] = useState("Recent Users");
-
+    const [topCounty, setTopCounty] = useState(null);
+    const [percentage, setPercentage] = useState(0);
+    const [topPassportCounty, setTopPassportCounty] = useState(null);
+    const [passportPercentage, setPassportPercentage] = useState(0);
 
     //Getting All Users
     const fetchTotalUsers = async () => {
@@ -121,6 +131,79 @@ const Dashboard = () => {
     }, []);
 
 
+
+    useEffect(() => {
+        const fetchIdReports = async () => {
+            try {
+                const response = await fetch("http://localhost:4000/reported-ids");
+                const result = await response.json();
+
+                if (result.success) {
+                    const lostIds = result.data;
+
+                    // Count reports per county
+                    const countyCounts = lostIds.reduce((acc, { lostCounty }) => {
+                        acc[lostCounty] = (acc[lostCounty] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    // Find the county with the most lost ID reports
+                    const topCountyName = Object.keys(countyCounts).reduce((a, b) =>
+                        countyCounts[a] > countyCounts[b] ? a : b
+                    );
+
+                    const topCountyCount = countyCounts[topCountyName];
+                    const totalReports = lostIds.length;
+                    const calculatedPercentage = ((topCountyCount / totalReports) * 100).toFixed(1);
+
+                    setTopCounty(topCountyName);
+                    setPercentage(calculatedPercentage);
+                }
+            } catch (error) {
+                console.error("Error fetching lost ID reports:", error);
+            }
+        };
+
+        fetchIdReports();
+    }, []);
+
+
+    //Progress bar for the Top County with most lost Passports
+    useEffect(() => {
+        const fetchPassportReports = async () => {
+            try {
+                const response = await fetch("http://localhost:4000/reported-passports");
+                const result = await response.json();
+
+                if (result.success) {
+                    const lostPassports = result.data;
+
+                    // Count reports per county
+                    const countyCount = lostPassports.reduce((acc, { lostCounty }) => {
+                        acc[lostCounty] = (acc[lostCounty] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    // Find the county with the most lost passport reports
+                    const topPassportCountyName = Object.keys(countyCount).reduce((a, b) =>
+                        countyCount[a] > countyCount[b] ? a : b
+                    );
+
+                    const topCountyCount = countyCount[topPassportCountyName];
+                    const totalReports = lostPassports.length;
+                    const calculatedPercentage = ((topCountyCount / totalReports) * 100).toFixed(1);
+
+                    setTopPassportCounty(topPassportCountyName);
+                    setPassportPercentage(calculatedPercentage);
+                }
+            } catch (error) {
+                console.error("Error fetching lost passport reports:", error);
+            }
+        };
+
+        fetchPassportReports();
+    }, []);
+
     return (
         <div className="p-4 sm:p-6 bg-gray-100 mt-20 min-h-screen">
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Analytics</h2>
@@ -159,15 +242,23 @@ const Dashboard = () => {
                     </div>
 
                     {/* Audience Report */}
-                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow mt-6">
+                    <div className="bg-white p-3 sm:p-6 rounded-lg shadow mt-6">
                         <div className="flex justify-between">
-                            <h4 className="text-base sm:text-lg font-medium text-gray-700">Age Distribution</h4>
-                            <button className="px-3 sm:px-4 py-1 sm:py-2 bg-orange-600 text-white text-sm rounded-lg hover:bg-purple-700 transition duration-200">
+                            <h4 className="text-md sm:text-lg font-medium text-gray-700">User Age Distribution</h4>
+                            <button className="px-3 sm:px-4 py-1 sm:py-2 bg-orange-600 text-white text-sm rounded-lg ">
                                 Export
                             </button>
                         </div>
-                        <div className="h-48 flex items-center justify-center mt-4">
-                            <BsGraphUp className="text-gray-400 text-4xl sm:text-6xl" />
+                        <div className="h-50 mt-2">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="county" />
+                                    <YAxis domain={[18, 100]} />
+                                    <Tooltip />
+                                    <Bar dataKey="age" fill="#03a9f4" />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 
@@ -180,19 +271,33 @@ const Dashboard = () => {
                     {/* Plan Expiring */}
                     <div className="flex flex-col  gap-4 sm:gap-6">
                         <div className="bg-emerald-400 h-50 p-4 sm:p-6 rounded-lg shadow text-white flex flex-col justify-center">
-                            <h4 className="text-base sm:text-lg font-medium">ID Reports</h4>
-                            <p className="mt-2 text-sm">Upgrade to premium</p>
-                            <button className="mt-4 bg-white text-orange-600 px-3 sm:px-4 py-1 sm:py-2 rounded-lg hover:bg-gray-100 transition duration-200">
-                                Upgrade Now
-                            </button>
+                            <h4 className="text-base sm:text-lg font-medium">Top-County ID Reports</h4>
+                            <p className="mt-2 text-md">{topCounty || "Loading..."}</p>
+
+                            {/* Progress Bar */}
+                            <div className="w-full bg-white rounded-full h-8 mt-4">
+                                <div
+                                    className="bg-orange-400 h-8 rounded-full transition-all duration-500"
+                                    style={{ width: `${percentage}%` }}
+                                ></div>
+                            </div>
+
+                            <p className="mt-2 text-sm">{percentage}%</p>
                         </div>
 
                         <div className="bg-orange-400 h-60 p-4 sm:p-6 rounded-lg shadow text-white flex flex-col justify-center">
-                            <h4 className="text-base sm:text-lg font-medium">Passport Reports</h4>
-                            <p className="mt-2 text-sm">Upgrade to premium</p>
-                            <button className="mt-4 bg-white text-orange-600 px-3 sm:px-4 py-1 sm:py-2 rounded-lg hover:bg-gray-100 transition duration-200">
-                                Upgrade Now
-                            </button>
+                            <h4 className="text-base sm:text-lg font-medium">Top-County Passport Reports</h4>
+                            <p className="mt-2 text-md">{topPassportCounty || "Loading..."}</p>
+
+                            {/* Progress Bar */}
+                            <div className="w-full bg-white rounded-full h-8 mt-4">
+                                <div
+                                    className="bg-emerald-400 h-8 rounded-full transition-all duration-500"
+                                    style={{ width: `${passportPercentage}%` }}
+                                ></div>
+                            </div>
+
+                            <p className="mt-2 text-sm">{passportPercentage}%</p>
                         </div>
                     </div>
 

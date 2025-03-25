@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUserProfile, login, signUp, updateUserProfile } from '../Controllers/authController.js';
+import { getAllUsers, getAllUsersData, getUserProfile, login, signUp, updateUserProfile } from '../Controllers/authController.js';
 import authenticateToken from '../middlewares/authUser.js';
 import upload from '../config/multerConfig.js';
 
@@ -16,5 +16,10 @@ router.put('/update-profile', authenticateToken, upload.single('image'), updateU
 //Get user Data
 router.get('/userdata', authenticateToken, getUserProfile);
 
+//Getting All Users
+router.get('/get-users', getAllUsers);
+
+//Getting All users Data
+router.get('/get-all-users', getAllUsersData);
 
 export default router;

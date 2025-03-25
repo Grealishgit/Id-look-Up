@@ -107,3 +107,21 @@ export const reportedPassports = async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+export const getAllReports = async (req, res) => {
+    try {
+        const lostIdReports = await LostId.find();
+        const lostPassportReports = await lostPassport.find();
+
+        res.status(200).json({
+            success: true,
+            data: {
+                lostIdReports,
+                lostPassportReports,
+            },
+        });
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        res.status(500).json({ message: "Server error. Please try again." });
+    }
+};

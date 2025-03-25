@@ -143,3 +143,37 @@ export const getUserProfile = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+
+        // Count users by gender
+        const genderCount = {
+            Male: users.filter(user => user.gender === "Male").length,
+            Female: users.filter(user => user.gender === "Female").length,
+            Other: users.filter(user => user.gender === "Other").length,
+        };
+
+        res.status(200).json({
+            success: true,
+            data: genderCount,
+            totalUsers: users.length,
+        });
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        res.status(500).json({ message: "Server error. Please try again." });
+    }
+};
+
+export const getAllUsersData = async (req, res) => {
+    try {
+        const users = await User.find().select("-password");
+        res.status(200).json({ success: true, data: users });
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        res.status(500).json({ message: "Server error. Please try again." });
+    }
+}
+
+

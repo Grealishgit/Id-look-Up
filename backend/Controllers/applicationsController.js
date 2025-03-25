@@ -209,3 +209,21 @@ export const getAllFormUploads = async (req, res) => {
     }
 };
 
+export const getAllApplications = async (req, res) => {
+    try {
+        const lostIdApplications = await ApplyLostId.find();
+        const formUploads = await FormUploads.find();
+
+        res.status(200).json({
+            success: true,
+            data: {
+                lostIdApplications,
+                formUploads
+            }
+        });
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        res.status(500).json({ message: "Server error. Please try again." });
+    }
+};
+

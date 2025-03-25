@@ -25,6 +25,14 @@ const ReportPassport = () => {
         }));
     };
 
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        toast.error("You are not authenticated");
+        setLoading(false);
+        return;
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -33,6 +41,7 @@ const ReportPassport = () => {
             const response = await axios.post('http://localhost:4000/lost-passport', formData, {
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
             });
 

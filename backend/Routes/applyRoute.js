@@ -1,6 +1,6 @@
 import express from 'express';
 import authenticateToken from '../middlewares/authUser.js';
-import { applyLostId, getAllFormUploads, getAllLostIdApplications, getUserLostIdApplications, getUserUploadedForms, userUploadsForms } from '../Controllers/applicationsController.js';
+import { applyLostId, getAllApplications, getAllFormUploads, getAllLostIdApplications, getUserLostIdApplications, getUserUploadedForms, userUploadsForms } from '../Controllers/applicationsController.js';
 import upload from '../config/multerConfig.js';
 
 const router = express.Router();
@@ -16,5 +16,7 @@ router.post("/upload-forms", authenticateToken, upload.fields([{ name: "formA", 
 router.get('/user-forms', authenticateToken, getUserUploadedForms);
 router.get('/uploaded-forms', authenticateToken, getAllFormUploads);
 
+//Get all applications
+router.get('/applications', getAllApplications);
 
 export default router;

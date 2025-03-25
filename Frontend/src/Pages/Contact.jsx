@@ -15,9 +15,7 @@ const Contact = () => {
             method: "POST",
             body: formData
         });
-
         const data = await response.json();
-
         if (data.success) {
             setResult("");
             toast.success("Form Submitted Successfully");
@@ -29,14 +27,13 @@ const Contact = () => {
         }
     }
 
-
     return (
         <div className="max-w-screen-full mx-auto mt-10 py-12 px-4 min-h-screen" id="Contact">
             <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
                 Get in <span className='text-green-500'>Touch</span>  with <span className='text-red-500'>Us</span>
             </h1>
             <p className="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-8">
-                We’d love to hear from you! Whether you have a question, feedback, or need assistance, feel free to reach out.
+                We’d love to hear from you! Whether you have a question, feedback, or need assistance, just feel free to reach out.
             </p>
 
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl mx-auto">

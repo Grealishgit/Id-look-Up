@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
-import RecentUserCard from "../pages/TableCards/RecentUserCard";
 
 const Layout = () => {
     const [isOpen, setIsOpen] = useState(true);
@@ -11,7 +10,9 @@ const Layout = () => {
     return (
         <>
             {/* Main Layout Wrapper */}
-            <div className="h-screen flex bg-[#F3F5F7]">
+            <div className={`h-screen flex
+                ${isDarkMode ? "bg-gray-700" : "bg-[#F3F5F7]"}
+                `}>
                 {/* Sidebar (Fixed) */}
                 <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
                 <Navbar isOpen={isOpen} setIsOpen={setIsOpen} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />

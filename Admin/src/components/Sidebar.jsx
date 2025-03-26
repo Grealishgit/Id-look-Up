@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
             dropdownItems: ['IDs Collected', 'Passports Collected', 'Dl Collected']
         },
         {
-            title: 'Document Entry',
+            title: 'Entries',
             icon: FileInput,
             hasDropdown: true,
             dropdownItems: ['IDs', 'Passports', 'DLs', 'Certificates']
@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
         <div
             className={`transition-all duration-300 ease-in-out text-lg border-2 z-50
         ${isDarkMode ? 'bg-gray-700 text-white border-[#444]' : 'bg-white text-black border-[rgba(0,0,0,0.08)]'}
-        ${isOpen ? 'w-64' : 'w-17'}`}
+        ${isOpen ? 'md:w-64 w-40' : 'w-17'}`}
         >
             <div className="p-5 flex justify-between items-center">
                 <h1 className={`font-bold overflow-hidden transition-all duration-300 text-lg text-nowrap text-orange-500

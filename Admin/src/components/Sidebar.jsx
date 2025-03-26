@@ -1,40 +1,61 @@
 import { ChevronDown, ClipboardPlus, FileInput, FileSearch, FileUser, LayoutDashboard, Menu, Moon, Settings, Sun, X } from 'lucide-react';
 import { useState } from 'react';
-
-
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
+    const navigate = useNavigate();
     const [activeDropdown, setActiveDropdown] = useState('');
 
     const navItems = [
-        { title: 'Dashboard', icon: LayoutDashboard, hasDropdown: false },
+        { title: 'Dashboard', icon: LayoutDashboard, hasDropdown: false, route: '/' },
         {
             title: 'Applications',
             icon: FileUser,
             hasDropdown: true,
-            dropdownItems: ['ID Applications', 'KRA Applications', 'DL Renewal']
+            dropdownItems: [
+                { label: 'ID Applications', route: '/id-applications' },
+                { label: 'KRA Applications', route: '/kra-applications' },
+                { label: 'DL Renewal', route: '/dl-renewals' }
+            ]
         },
         {
             title: 'Reports',
             icon: ClipboardPlus,
             hasDropdown: true,
-            dropdownItems: ['Lost IDs', 'Lost Passports', 'Lost Dl', 'Lost Certificates']
+            dropdownItems: [
+                { label: 'Lost IDs', route: '/lost-id' },
+                { label: 'Lost Passports', route: '/lost-passports' },
+                { label: 'Lost DL', route: '/lost-dl' },
+                { label: 'Lost Certificates', route: '/lost-certificates' }
+            ]
         },
         {
             title: 'Findings',
             icon: FileSearch,
             hasDropdown: true,
-            dropdownItems: ['IDs Collected', 'Passports Collected', 'Dl Collected']
+            dropdownItems: [
+                { label: 'IDs Collected', route: '/ids-collected' },
+                { label: 'Passports Collected', route: '/passports-collected' },
+                { label: 'DL Collected', route: '/dl-collected' }
+            ]
         },
         {
             title: 'Entries',
             icon: FileInput,
             hasDropdown: true,
-            dropdownItems: ['IDs', 'Passports', 'DLs', 'Certificates']
+            dropdownItems: [
+                { label: 'IDs', route: '/entries/ids' },
+                { label: 'Passports', route: '/entries/passports' },
+                { label: 'DLs', route: '/entries/dls' },
+                { label: 'Certificates', route: '/entries/certificates' }
+            ]
         },
-        { title: 'Settings', icon: Settings, hasDropdown: false },
-
+        { title: 'Settings', icon: Settings, hasDropdown: false, route: '/settings' }
     ];
+
+    const toggleDropdown = (title) => {
+        setActiveDropdown(activeDropdown === title ? '' : title);
+    };
 
     return (
         <div
@@ -47,10 +68,11 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
           ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
                     DASHBOARD
                 </h1>
-                {
-                    isDarkMode ? <Sun size={20} className='cursor-pointer  md:block hidden' onClick={() => setIsDarkMode(false)} />
-                        : <Moon size={20} className='cursor-pointer md:block hidden' onClick={() => setIsDarkMode(true)} />
-                }
+                {isDarkMode ? (
+                    <Sun size={20} className='cursor-pointer md:block hidden' onClick={() => setIsDarkMode(false)} />
+                ) : (
+                    <Moon size={20} className='cursor-pointer md:block hidden' onClick={() => setIsDarkMode(true)} />
+                )}
 
                 <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -64,9 +86,15 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                 {navItems.map((item) => (
                     <div key={item.title}>
                         <div
-                            className={`px-4 py-3  cursor-pointer flex items-center justify-between 
-                ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-orange-200 '}`}
-                            onClick={() => item.hasDropdown && isOpen && setActiveDropdown(activeDropdown === item.title ? '' : item.title)}
+                            className={`px-4 py-3 cursor-pointer flex items-center justify-between 
+                            ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-orange-200 '}`}
+                            onClick={() => {
+                                if (item.hasDropdown && isOpen) {
+                                    toggleDropdown(item.title);
+                                } else if (!item.hasDropdown) {
+                                    navigate(item.route);
+                                }
+                            }}
                         >
                             <div className="flex items-center">
                                 <item.icon size={20} strokeWidth={1.5} color={isDarkMode ? '#fff' : '#000'} />
@@ -82,7 +110,6 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                                     className={`transition-transform duration-200 min-w-4 min-h-6 md:min-w-10 md:min-h-6
                                      ${activeDropdown === item.title ? 'rotate-180' : ''}`}
                                 />
-
                             )}
                         </div>
 
@@ -91,11 +118,12 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                 ${isDarkMode ? 'bg-gray-600' : 'bg-white'}`}>
                                 {item.dropdownItems.map((dropdownItem) => (
                                     <div
-                                        key={dropdownItem}
-                                        className={`px-11 py-2
-                                            ${isDarkMode ? "hover:bg-gray-500" : "hover:bg-orange-200"}  cursor-pointer text-sm`}
+                                        key={dropdownItem.label}
+                                        className={`px-11 py-2 cursor-pointer text-sm
+                                            ${isDarkMode ? "hover:bg-gray-500" : "hover:bg-orange-200"}`}
+                                        onClick={() => navigate(dropdownItem.route)}
                                     >
-                                        {dropdownItem}
+                                        {dropdownItem.label}
                                     </div>
                                 ))}
                             </div>
@@ -106,4 +134,5 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
         </div>
     );
 };
+
 export default Sidebar;

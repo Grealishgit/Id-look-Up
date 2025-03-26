@@ -18,7 +18,9 @@ const Layout = () => {
                 <Navbar isOpen={isOpen} setIsOpen={setIsOpen} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
 
                 {/* Main Content Section */}
-                <main className="flex-0 flex-grow border-l border-gray-500 overflow-y-auto bg-gray-100">
+                <main className={`flex-0 flex-grow 
+                    ${isDarkMode ? "bg-gray-700 border-gray-300" : "bg-gray-100 border-orange-400"}
+                    border-l  overflow-y-auto `}>
                     <Outlet context={{ isDarkMode, setIsDarkMode }} />
                 </main>
             </div>

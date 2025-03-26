@@ -94,6 +94,7 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                                 } else if (!item.hasDropdown) {
                                     navigate(item.route);
                                 }
+
                             }}
                         >
                             <div className="flex items-center">
@@ -121,7 +122,11 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                                         key={dropdownItem.label}
                                         className={`px-11 py-2 cursor-pointer text-sm
                                             ${isDarkMode ? "hover:bg-gray-500" : "hover:bg-orange-200"}`}
-                                        onClick={() => navigate(dropdownItem.route)}
+                                        onClick={() => {
+                                            navigate(dropdownItem.route);
+                                            /* setIsOpen(false); */
+                                        }}
+
                                     >
                                         {dropdownItem.label}
                                     </div>

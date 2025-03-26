@@ -40,21 +40,21 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
         <div
             className={`transition-all duration-300 ease-in-out text-lg border-2 z-50
         ${isDarkMode ? 'bg-gray-700 text-white border-[#444]' : 'bg-white text-black border-[rgba(0,0,0,0.08)]'}
-        ${isOpen ? 'md:w-64 w-40' : 'w-17'}`}
+        ${isOpen ? 'md:w-64 w-50' : 'w-17'}`}
         >
             <div className="p-5 flex justify-between items-center">
-                <h1 className={`font-bold overflow-hidden transition-all duration-300 text-lg text-nowrap text-orange-500
+                <h1 className={`font-bold overflow-hidden transition-all duration-300 md:text-lg text-sm text-nowrap text-orange-500
           ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
-                    Dashboard
+                    DASHBOARD
                 </h1>
                 {
-                    isDarkMode ? <Sun size={20} className='cursor-pointer' onClick={() => setIsDarkMode(false)} />
-                        : <Moon size={20} className='cursor-pointer' onClick={() => setIsDarkMode(true)} />
+                    isDarkMode ? <Sun size={20} className='cursor-pointer  md:block hidden' onClick={() => setIsDarkMode(false)} />
+                        : <Moon size={20} className='cursor-pointer md:block hidden' onClick={() => setIsDarkMode(true)} />
                 }
 
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`cursor-pointer border ${isDarkMode ? "border-gray-500 " : "border-gray-300"}  p-1 rounded-lg`}
+                    className={`cursor-pointer border ${isDarkMode ? "md:border-gray-500 border-gray-700 " : "md:border-gray-300 border-white"}  p-1 rounded-lg`}
                 >
                     {isOpen ? <X size={25} strokeWidth={1.5} /> : <Menu size={25} strokeWidth={1.5} />}
                 </button>
@@ -71,7 +71,7 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                             <div className="flex items-center">
                                 <item.icon size={20} strokeWidth={1.5} color={isDarkMode ? '#fff' : '#000'} />
                                 <span className={`ml-4 whitespace-nowrap overflow-hidden transition-all duration-300
-                  ${isOpen ? 'w-32 opacity-100' : 'w-0 opacity-0'}`}>
+                                    ${isOpen ? 'w-32 opacity-100' : 'w-0 opacity-0'}`}>
                                     {item.title}
                                 </span>
                             </div>
@@ -79,9 +79,10 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                                 <ChevronDown
                                     size={16}
                                     strokeWidth={1.5}
-                                    className={`transition-transform duration-200 
-                    ${activeDropdown === item.title ? 'rotate-180' : ''}`}
+                                    className={`transition-transform duration-200 min-w-4 min-h-6 md:min-w-10 md:min-h-6
+                                     ${activeDropdown === item.title ? 'rotate-180' : ''}`}
                                 />
+
                             )}
                         </div>
 

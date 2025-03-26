@@ -213,10 +213,7 @@ const Dashboard = () => {
             <div className={` border-2 rounded-md border-[rgba(0,0,0,0.08)] h-full p-8 shadow-sm flex flex-col items-center justify-center
       ${isDarkMode ? 'bg-gray-700 text-gray-200 border-[#444]' : 'bg-gray-100 text-gray-800 border-[rgba(0,0,0,0.08)]'}    
         `}>
-
-
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Analytics</h2>
-
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Analytics</h2>
             {/* Analytics Dashboard */}
             <div className="flex flex-col lg:flex-row gap-6 w-full mt-6">
                 {/* Left Section (Analytics Cards) */}
@@ -344,27 +341,30 @@ const Dashboard = () => {
 
                             {/* Total Count in the Center */}
                             <div className="absolute text-center">
-                                    <h2 className="text-xl sm:text-2xl font-bold ">
+                                    <h2 className="sm:text-2xl text-md font-bold ">
                                         {analyticsData.users} Users
                                 </h2>
-                                    <p className=" text-md">Gender Distributions</p>
+                                    <p className=" md:text-md text-sm">Gender Distributions</p>
                             </div>
                         </div>
 
                         {/* Display Gender Percentage */}
-                        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
-                            {Object.entries(analyticsData.usersPerGender).map(([gender, count]) => {
-                                const percentage = ((count / analyticsData.users) * 100).toFixed(2);
-                                return (
-                                    <div key={gender} className="flex items-center space-x-2">
-                                        <span className=" font-medium">
-                                            {gender.charAt(0).toUpperCase() + gender.slice(1)}:
-                                        </span>
-                                        <span className={` ${isDarkMode ? "" : "text-green-600"} font-bold text-md`}>{percentage}%</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 w-full overflow-hidden">
+                                {Object.entries(analyticsData.usersPerGender).map(([gender, count]) => {
+                                    const percentage = ((count / analyticsData.users) * 100).toFixed(2);
+                                    return (
+                                        <div key={gender} className="flex items-center space-x-2">
+                                            <span className="font-medium">
+                                                {gender.charAt(0).toUpperCase() + gender.slice(1)}:
+                                            </span>
+                                            <span className={`${isDarkMode ? "" : "text-green-600"} font-bold text-md`}>
+                                                {percentage}%
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
                     </div>
 
 

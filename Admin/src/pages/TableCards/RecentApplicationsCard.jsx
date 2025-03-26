@@ -19,7 +19,7 @@ const RecentApplicationsCard = () => {
 
                 if (result.success) {
                     // Combine lostIdApplications and formUploads into one array
-                    const idApplications = [...result.data.lostIdApplications];
+                    const idApplications = [...result.data.lostIdApplications].reverse();
                     setApplications(idApplications);
                 } else {
                     setError("Failed to fetch applications.");

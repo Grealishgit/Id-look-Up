@@ -49,7 +49,7 @@ const RecentReportsCard = () => {
                         date: new Date(report.createdAt).toLocaleDateString(),
                         avatar: report.image || "https://i.pravatar.cc/40",
                     })),
-                ];
+                ].reverse();
 
                 setReports(formattedReports);
             } catch (error) {

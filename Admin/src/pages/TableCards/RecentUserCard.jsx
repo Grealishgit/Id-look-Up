@@ -37,8 +37,9 @@ const RecentUserCard = () => {
         const fetchUsers = async () => {
             try {
                 const response = await axios.get("http://localhost:4000/get-all-users");
-                setData(response.data.data);
-                assignRandomColors(response.data.data);
+                const reversedData = response.data.data.reverse();
+                setData(reversedData);
+                assignRandomColors(reversedData);
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
@@ -46,6 +47,7 @@ const RecentUserCard = () => {
 
         fetchUsers();
     }, []);
+
 
     const handleSelectRow = (id) => {
         setSelectedRows((prev) =>

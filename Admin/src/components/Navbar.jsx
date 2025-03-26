@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaMoon, FaShoppingCart, FaBell, FaCog } from "react-icons/fa";
-import { RiMenu2Fill, RiCloseFill } from "react-icons/ri";
 import { IoLanguage } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { LuExpand } from "react-icons/lu";
 import { FiUser, FiLock } from "react-icons/fi";
 import { MdHelpOutline } from "react-icons/md";
 import { RiSettings2Line } from "react-icons/ri";
+import { Sun } from "lucide-react";
 
-const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibility }) => {
+const Navbar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
     const navigate = useNavigate();
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -32,36 +32,20 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
             date.getMinutes()
         ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
 
-
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
     return (
-        <div className={`fixed  top-0 left-0 ${isCollapsed ? "md:left-24" : "md:left-64"} right-0 flex justify-between items-center bg-white shadow-md px-4 md:px-10 p-4 transition-all duration-300 z-40`}>
+        <div className={`fixed  top-0 left-0 ${isOpen ? "md:left-64" : "md:left-17 "} right-0 flex justify-between items-center
+        ${isDarkMode ? "bg-gray-700 text-white" : "bg-white"}
+         shadow-md px-4 md:px-10 p-4 transition-all duration-300 z-40`}>
             {/* Left Section */}
             <div className="flex items-center gap-3">
 
-
-                <button
-                    className="text-gray-600 cursor-pointer mr-5 text-2xl flex items-center"
-                    onClick={() => {
-                        toggleSidebar();
-                        toggleSidebarVisibility();
-                    }}
-                >
-                    {isSidebarOpen || isMobile ? <RiMenu2Fill /> : <RiCloseFill />}
-                </button>
-
-                <div className="relative hidden sm:block">
+                <div className="relative hidden md:block">
                     <input
                         type="text"
                         placeholder="Search anything here ..."
-                        className="w-40 md:w-80 px-4 py-2 pl-10 border border-gray-300 rounded-lg bg-white focus:outline-gray-200 focus:ring-1 focus:ring-gray-100"
+                        className={`w-40 md:w-80 px-4 py-2 pl-10 border  rounded-lg
+                            ${isDarkMode ? "text-white focus:outline-gray-200 " : "border-gray-600 text-black focus:outline-gray-700 bg-white"}
+                              focus:ring-1 focus:ring-gray-100`}
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-400" />
                 </div>
@@ -79,7 +63,7 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
                 <div className="md:block hidden">
                     <div className="flex gap-3 items-center">
                         <p className="text-orange-400 items-center font-bold text-2xl">{formatDate(dateTime)}</p>
-                        <h1 className="text-black text-2xl font-bold tracking-wide w-[90px]">{formatTime(dateTime)}</h1>
+                        <h1 className="text-2xl font-bold tracking-wide w-[90px]">{formatTime(dateTime)}</h1>
                     </div>
                 </div>
 
@@ -90,7 +74,11 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
                 {/* Visible on large screens (md and above) */}
                 <div className="hidden md:flex gap-4">
                     <IconButton icon={<IoLanguage />} />
-                    <IconButton icon={<FaMoon />} />
+
+                    {isDarkMode ? <IconButton icon={<Sun size={15} onClick={() => setIsDarkMode(false)} />} />
+                        : <IconButton icon={<FaMoon onClick={() => setIsDarkMode(true)} />} />}
+
+
                     <IconButton icon={<FaShoppingCart />} badge={0} />
                     <IconButton icon={<FaBell />} badge={5} />
                     <IconButton icon={<LuExpand />} />
@@ -100,7 +88,8 @@ const Navbar = ({ isCollapsed, toggleSidebar, isSidebarOpen, toggleSidebarVisibi
                 <div className="flex md:hidden gap-4">
                     <IconButton icon={<CiSearch />} />
                     <IconButton icon={<IoLanguage />} />
-                    <IconButton icon={<FaMoon />} />
+                    {isDarkMode ? <IconButton icon={<Sun size={15} onClick={() => setIsDarkMode(false)} />} />
+                        : <IconButton icon={<FaMoon onClick={() => setIsDarkMode(true)} />} />}
                 </div>
 
                 {/* Profile Avatar with Dropdown */}

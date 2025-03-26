@@ -1,61 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
 import { Outlet } from "react-router-dom";
+import Navbar from "./Navbar";
+import RecentUserCard from "../pages/TableCards/RecentUserCard";
 
 const Layout = () => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768); // Open on desktop, closed on mobile
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsSidebarOpen(window.innerWidth >= 768); // Adjust on resize
-        };
-
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
-    };
-
-    const toggleSidebarVisibility = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
-
-    const closeSidebar = () => {
-        setIsSidebarOpen(false);
-    };
+    const [isOpen, setIsOpen] = useState(true);
+    const [isDarkMode, setIsDarkMode] = useState("");
 
     return (
-        <div className="flex h-screen">
-            {/* Sidebar (Fixed) */}
-            <Sidebar
-                isCollapsed={isCollapsed}
-                isSidebarOpen={isSidebarOpen}
-                closeSidebar={closeSidebar}
-            />
+        <>
+            {/* Main Layout Wrapper */}
+            <div className="h-screen flex bg-[#F3F5F7]">
+                {/* Sidebar (Fixed) */}
+                <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+                <Navbar isOpen={isOpen} setIsOpen={setIsOpen} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
 
-            {/* Main Content - Scrollable */}
-            <div className="flex flex-col flex-1 overflow-hidden">
-                {/* Navbar (Fixed at the top) */}
-                <Navbar
-                    isCollapsed={isCollapsed}
-                    toggleSidebar={toggleSidebar}
-                    isSidebarOpen={isSidebarOpen}
-                    toggleSidebarVisibility={toggleSidebarVisibility}
-                />
-
-
-                <main className="flex-1 flex-grow overflow-y-auto p-6 bg-gray-100">
-                    <Outlet />
+                {/* Main Content Section */}
+                <main className="flex-0 flex-grow border-l border-gray-500 overflow-y-auto bg-gray-100">
+                    <Outlet context={{ isDarkMode, setIsDarkMode }} />
                 </main>
-
-                {/* Footer */}
-
             </div>
-        </div>
+
+        </>
+
     );
 };
 

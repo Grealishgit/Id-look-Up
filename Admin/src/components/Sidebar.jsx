@@ -1,228 +1,108 @@
-import React, { useEffect, useRef, useState } from "react";
-import { FaAngleUp, FaAngleDown } from "react-icons/fa";
-import { MdAccountBalance, MdDashboard, MdOutlineQuestionAnswer } from "react-icons/md";
-import { GoPeople } from "react-icons/go";
-import { RiCloseFill, RiMoneyDollarBoxFill } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { ChevronDown, ClipboardPlus, FileInput, FileSearch, FileUser, LayoutDashboard, Menu, Moon, Settings, Sun, X } from 'lucide-react';
+import { useState } from 'react';
 
-const Sidebar = ({ isCollapsed, isSidebarOpen, closeSidebar }) => {
-    const [openMenus, setOpenMenus] = useState({});
-    const sidebarRef = useRef(null);
 
-    const toggleMenu = (menu) => {
-        setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
-    };
 
-    // **Close sidebar when clicking outside**
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (
-                sidebarRef.current &&
-                !sidebarRef.current.contains(event.target) &&
-                window.innerWidth < 768 // Only close sidebar on small screens
-            ) {
-                closeSidebar();
-            }
-        };
+const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
+    const [activeDropdown, setActiveDropdown] = useState('');
 
-        if (isSidebarOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
+    const navItems = [
+        { title: 'Dashboard', icon: LayoutDashboard, hasDropdown: false },
+        {
+            title: 'Applications',
+            icon: FileUser,
+            hasDropdown: true,
+            dropdownItems: ['ID Applications', 'KRA Applications', 'DL Renewal']
+        },
+        {
+            title: 'Reports',
+            icon: ClipboardPlus,
+            hasDropdown: true,
+            dropdownItems: ['Lost IDs', 'Lost Passports', 'Lost Dl', 'Lost Certificates']
+        },
+        {
+            title: 'Findings',
+            icon: FileSearch,
+            hasDropdown: true,
+            dropdownItems: ['IDs Collected', 'Passports Collected', 'Dl Collected']
+        },
+        {
+            title: 'Document Entry',
+            icon: FileInput,
+            hasDropdown: true,
+            dropdownItems: ['IDs', 'Passports', 'DLs', 'Certificates']
+        },
+        { title: 'Settings', icon: Settings, hasDropdown: false },
 
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isSidebarOpen]);
-
-    const navigate = useNavigate();
-
-    const NavItem = ({ icon, label, dropdown, isOpen, onClick, children }) => (
-        <div>
-            <div
-                className={`flex items-center gap-3 text-gray-300 hover:text-white cursor-pointer p-2 hover:bg-gray-700 rounded-md transition-all duration-300
-            ${isCollapsed && !isSidebarOpen ? "pl-3" : "pl-4"}`}
-                onClick={onClick}
-            >
-                <div className="w-6 flex justify-start">{icon}</div>
-                {(!isCollapsed || isSidebarOpen) && <span>{label}</span>}
-                {dropdown && (!isCollapsed || isSidebarOpen) && (
-                    <span className="ml-auto">{isOpen ? <FaAngleUp /> : <FaAngleDown />}</span>
-                )}
-            </div>
-            {(!isCollapsed || isSidebarOpen) && isOpen && <div className="ml-6 text-gray-400">{children}</div>}
-        </div>
-    );
+    ];
 
     return (
         <div
-            ref={sidebarRef}
-            className={`bg-[#1B1E32] text-white fixed top-0 left-0 h-screen transition-all duration-300 z-50
-    ${isCollapsed && !isSidebarOpen ? "w-[6rem]" : "w-64"}
-    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-    md:relative md:translate-x-0 md:block overflow-hidden`}
+            className={`transition-all duration-300 ease-in-out text-lg border-2 z-50
+        ${isDarkMode ? 'bg-gray-700 text-white border-[#444]' : 'bg-white text-black border-[rgba(0,0,0,0.08)]'}
+        ${isOpen ? 'w-64' : 'w-17'}`}
         >
-            {/* Close Icon */}
-            <button
-                className="absolute top-4 right-4 text-white z-60 text-2xl md:hidden"
-                onClick={() => closeSidebar()}
-            >
-                <RiCloseFill />
-            </button>
+            <div className="p-5 flex justify-between items-center">
+                <h1 className={`font-bold overflow-hidden transition-all duration-300 text-lg text-nowrap text-orange-500
+          ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+                    Dashboard
+                </h1>
+                {
+                    isDarkMode ? <Sun size={20} className='cursor-pointer' onClick={() => setIsDarkMode(false)} />
+                        : <Moon size={20} className='cursor-pointer' onClick={() => setIsDarkMode(true)} />
+                }
 
-            {/* Fixed Logo Section */}
-            <div className="p-5 border-b border-gray-500 sticky top-0 bg-[#1B1E32] z-10">
-                <div className={`flex items-center gap-3 ${isCollapsed ? "justify-center" : ""}`}>
-                    <div className="w-auto h-8 flex items-left justify-center">
-                        {isCollapsed ? (<img onClick={() => { navigate("/"); closeSidebar(); }}                                                                               
-                                src={null} alt="logo" className="w-8 object-contain" />
-                        ) : (
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={`cursor-pointer border ${isDarkMode ? "border-gray-500 " : "border-gray-300"}  p-1 rounded-lg`}
+                >
+                    {isOpen ? <X size={25} strokeWidth={1.5} /> : <Menu size={25} strokeWidth={1.5} />}
+                </button>
+            </div>
 
-                                <a onClick={() => { navigate("/"); closeSidebar(); }} className="font-bold ml-10 text-3xl" href="">
-                                    ID-<span className=" text-orange-500 underline">LOOK</span>-UP
-                                </a>
+            <nav className="mt-6">
+                {navItems.map((item) => (
+                    <div key={item.title}>
+                        <div
+                            className={`px-4 py-3  cursor-pointer flex items-center justify-between 
+                ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-orange-200 '}`}
+                            onClick={() => item.hasDropdown && isOpen && setActiveDropdown(activeDropdown === item.title ? '' : item.title)}
+                        >
+                            <div className="flex items-center">
+                                <item.icon size={20} strokeWidth={1.5} color={isDarkMode ? '#fff' : '#000'} />
+                                <span className={`ml-4 whitespace-nowrap overflow-hidden transition-all duration-300
+                  ${isOpen ? 'w-32 opacity-100' : 'w-0 opacity-0'}`}>
+                                    {item.title}
+                                </span>
+                            </div>
+                            {item.hasDropdown && isOpen && (
+                                <ChevronDown
+                                    size={16}
+                                    strokeWidth={1.5}
+                                    className={`transition-transform duration-200 
+                    ${activeDropdown === item.title ? 'rotate-180' : ''}`}
+                                />
+                            )}
+                        </div>
+
+                        {item.hasDropdown && isOpen && activeDropdown === item.title && (
+                            <div className={`overflow-hidden transition-all duration-200 
+                ${isDarkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                {item.dropdownItems.map((dropdownItem) => (
+                                    <div
+                                        key={dropdownItem}
+                                        className={`px-11 py-2
+                                            ${isDarkMode ? "hover:bg-gray-500" : "hover:bg-orange-200"}  cursor-pointer text-sm`}
+                                    >
+                                        {dropdownItem}
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </div>
-                </div>
-            </div>
-
-            {/* Scrollable Navigation */}
-            <div className="overflow-y-auto cursor-pointer scrollbar-hide h-[calc(100vh-80px)] p-5">
-                <div className="mt-3">
-                    <p className="text-[20px] text-orange-500 ml-5 font-bold">ADMIN DASHBOARD</p>
-                </div>
-
-                <nav className="space-y-4">
-                    <NavItem
-                        onClick={() => { navigate("/"); closeSidebar(); }} icon={<MdDashboard />} label="Dashboard" />
-                    <NavItem
-                        icon={<RiMoneyDollarBoxFill />}
-                        label="Applications"
-                        dropdown
-                        isOpen={openMenus.accountRecharge}
-                        onClick={() => toggleMenu("accountRecharge")} >
-                        <div
-                            onClick={() => {
-                                navigate("/id-applications");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"
-                        >
-                            - ID Applications
-                        </div>
-                        <div
-                            onClick={() => {
-                                navigate("/kra-applications");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"
-                        >
-                            - KRA Applications
-                        </div>
-                        <div
-                            onClick={() => {
-                                navigate("/dl-renewals");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"
-                        >
-                            - DL Renewal
-                        </div>
-                    </NavItem>
-                    <NavItem
-                        icon={<MdAccountBalance />}
-                        label="Lost Document Reports"
-                        dropdown
-                        isOpen={openMenus.withdrawals}
-                        onClick={() => toggleMenu("withdrawals")}
-                    >
-                        <div
-                            onClick={() => {
-                                navigate("/lost-id");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 mb-2 ml-5 hover:text-green-500"
-                        >
-                            - Lost ID's
-                        </div>
-                        <div
-                            onClick={() => {
-                                navigate("/lost-passports");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 mb-2 ml-5 hover:text-green-500"
-                        >
-                            - Lost Passports
-                        </div>
-                        <div
-                            onClick={() => {
-                                navigate("/lost-dl");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"
-                        >
-                            - Lost DL
-                        </div>
-
-
-
-                    </NavItem>
-                    <NavItem
-                        icon={<GoPeople />}
-                        label="Findings"
-                        dropdown
-                        isOpen={openMenus.downlines}
-                        onClick={() => toggleMenu("downlines")}
-                    >
-                        <div
-                            onClick={() => {
-                                navigate("/");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"
-                        >
-                            - ID's Collected
-                        </div>
-                        <div
-                            onClick={() => {
-                                navigate("/");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"
-                        >
-                            - Passports Collected
-                        </div>
-                        <div
-                            onClick={() => {
-                                navigate("/");
-                                closeSidebar();
-                            }}
-                            className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500"
-                        >
-                            - DL collected
-                        </div>
-
-
-                    </NavItem>
-
-
-                    <NavItem icon={<MdOutlineQuestionAnswer />}
-                        label="Document Entry" dropdown isOpen={openMenus.trivia}
-                        onClick={() => toggleMenu("trivia")}>
-                        <div onClick={() => { navigate('/'); closeSidebar(); }} className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500">
-                            - IDs</div>
-                        <div onClick={() => { navigate('/'); closeSidebar(); }} className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500">
-                            - Passports</div>
-                        <div onClick={() => { navigate('/'); closeSidebar(); }} className="text-md font-semibold mt-2 ml-5 mb-2 hover:text-green-500">
-                            - DL</div>
-                    </NavItem>
-
-
-
-
-                </nav>
-            </div>
+                ))}
+            </nav>
         </div>
     );
 };
-
 export default Sidebar;

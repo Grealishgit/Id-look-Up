@@ -3,12 +3,13 @@ import { FiUser, FiEye, FiBarChart2 } from "react-icons/fi";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 import { Doughnut, Line } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
-import DashboardCard from "./TableCards/RecentUserCard";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
-
+import { useOutletContext } from "react-router-dom";
 import axios from "axios";
 import RecentReportsCard from "./TableCards/RecentReportsCard";
 import RecentApplicationsCard from "./TableCards/RecentApplicationsCard";
+import RecentUserCard from "./TableCards/RecentUserCard";
+import { ChevronDown } from "lucide-react";
 
 const data = [
     { county: "Nairobi", age: 45 },
@@ -31,6 +32,7 @@ const doughnutOptions = {
 };
 
 const Dashboard = () => {
+    const { isDarkMode } = useOutletContext();
     const [analyticsData, setAnalyticsData] = useState({
         totalUsers: 0,
         totalApplications: 0,
@@ -63,6 +65,7 @@ const Dashboard = () => {
         ],
     };
     const [activeTab, setActiveTab] = useState("Recent Users");
+    const [isOpen, setIsOpen] = useState(false);
     const [topCounty, setTopCounty] = useState(null);
     const [percentage, setPercentage] = useState(0);
     const [topPassportCounty, setTopPassportCounty] = useState(null);
@@ -205,7 +208,13 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div className="p-4 sm:p-6 bg-gray-100 mt-20 min-h-screen">
+
+        <div >
+            <div className={` border-2 rounded-md border-[rgba(0,0,0,0.08)] h-full p-8 shadow-sm flex flex-col items-center justify-center
+      ${isDarkMode ? 'bg-gray-700 text-gray-200 border-[#444]' : 'bg-gray-100 text-gray-800 border-[rgba(0,0,0,0.08)]'}    
+        `}>
+
+
             <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Analytics</h2>
 
             {/* Analytics Dashboard */}
@@ -214,47 +223,55 @@ const Dashboard = () => {
                 <div className="w-full lg:w-1/2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {/* Total Users */}
-                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow flex flex-col">
+                            <div className={` p-4 sm:p-6 rounded-lg 
+                            ${isDarkMode ? "bg-gray-600 " : "bg-white"}
+                            shadow flex flex-col`}>
                             <div className="flex justify-between">
-                                <h4 className="text-base sm:text-lg font-medium text-gray-700">Total <br /> Users</h4>
-                                <FiUser className="text-gray-500 text-xl sm:text-2xl" />
+                                    <h4 className="text-base sm:text-lg font-medium ">Total <br /> Users</h4>
+                                    <FiUser className="text-xl sm:text-2xl" />
                             </div>
                             <h2 className="text-2xl sm:text-3xl font-bold mt-2">{analyticsData.users.toLocaleString()}</h2>
                         </div>
 
                         {/* Total Applications */}
-                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow flex flex-col">
+                            <div className={` p-4 sm:p-6 rounded-lg 
+                            ${isDarkMode ? "bg-gray-600 " : "bg-white"}
+                            shadow flex flex-col`}>
                             <div className="flex justify-between">
-                                <h4 className="text-base sm:text-lg font-medium text-gray-700">Total Applications</h4>
-                                <FiEye className="text-gray-500 text-xl sm:text-2xl" />
+                                    <h4 className="text-base sm:text-lg font-medium ">Total Applications</h4>
+                                    <FiEye className=" text-xl sm:text-2xl" />
                             </div>
                             <h2 className="text-2xl sm:text-3xl font-bold mt-2">{analyticsData.totalApplications.toLocaleString()}</h2>
                         </div>
 
                         {/* Total Reports */}
-                        <div className="bg-white p-4 sm:p-6 rounded-lg shadow flex flex-col">
+                            <div className={` p-4 sm:p-6 rounded-lg 
+                            ${isDarkMode ? "bg-gray-600 " : "bg-white"}
+                            shadow flex flex-col`}>
                             <div className="flex justify-between">
-                                <h4 className="text-base sm:text-lg font-medium text-gray-700">Total Reports</h4>
-                                <FiBarChart2 className="text-gray-500 text-xl sm:text-2xl" />
+                                    <h4 className="text-base sm:text-lg font-medium">Total Reports</h4>
+                                    <FiBarChart2 className=" text-xl sm:text-2xl" />
                             </div>
                             <h2 className="text-2xl sm:text-3xl font-bold mt-2">{analyticsData.totalReports.toLocaleString()}</h2>
                         </div>
                     </div>
 
                     {/* Audience Report */}
-                    <div className="bg-white p-3 sm:p-6 rounded-lg shadow mt-6">
+                        <div className={`p-3 sm:p-6 
+                        ${isDarkMode ? "bg-gray-600" : "bg-white "}
+                        rounded-lg shadow mt-6`}>
                         <div className="flex justify-between">
-                            <h4 className="text-md sm:text-lg font-medium text-gray-700">User Age Distribution</h4>
-                            <button className="px-3 sm:px-4 py-1 sm:py-2 bg-orange-600 text-white text-sm rounded-lg ">
+                                <h4 className="text-md sm:text-lg font-medium ">User Age Distribution</h4>
+                                <button className="px-3 sm:px-4 py-1 sm:py-2 cursor-pointer bg-orange-600 text-white text-sm rounded-lg ">
                                 Export
                             </button>
                         </div>
-                        <div className="h-50 mt-2">
+                            <div className="h-50 cursor-pointer mt-2">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="county" />
-                                    <YAxis domain={[18, 100]} />
+                                        <XAxis dataKey="county" />
+                                        <YAxis domain={[18, 100]} />
                                     <Tooltip />
                                     <Bar dataKey="age" fill="#03a9f4" />
                                 </BarChart>
@@ -270,7 +287,9 @@ const Dashboard = () => {
                 <div className="w-full lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     {/* Plan Expiring */}
                     <div className="flex flex-col  gap-4 sm:gap-6">
-                        <div className="bg-emerald-400 h-50 p-4 sm:p-6 rounded-lg shadow text-white flex flex-col justify-center">
+                            <div className={` h-50 p-4 sm:p-6 
+                                ${isDarkMode ? "bg-gray-600" : "bg-emerald-400"}
+                                rounded-lg shadow flex flex-col justify-center`}>
                             <h4 className="text-base sm:text-lg font-medium">Top-County ID Reports</h4>
                             <p className="mt-2 text-md">{topCounty || "Loading..."}</p>
 
@@ -285,7 +304,9 @@ const Dashboard = () => {
                             <p className="mt-2 text-sm">{percentage}%</p>
                         </div>
 
-                        <div className="bg-orange-400 h-60 p-4 sm:p-6 rounded-lg shadow text-white flex flex-col justify-center">
+                            <div className={`h-60 p-4 sm:p-6
+                             ${isDarkMode ? "bg-gray-600" : "bg-orange-400"}
+                            rounded-lg shadow text-white flex flex-col justify-center`}>
                             <h4 className="text-base sm:text-lg font-medium">Top-County Passport Reports</h4>
                             <p className="mt-2 text-md">{topPassportCounty || "Loading..."}</p>
 
@@ -303,22 +324,30 @@ const Dashboard = () => {
 
                     {/* Sessions By Device */}
 
-                    <div className="bg-white p-4 sm:p-6 rounded-lg shadow">
-                        <h4 className="text-base sm:text-lg font-medium text-gray-700">Users Per Gender</h4>
-                        <button className="mt-2 bg-purple-200 rounded-md font-semibold px-3 sm:px-5 py-1 sm:py-2 text-sm">
-                            View All
+                        <div className={` p-4 sm:p-6
+                        ${isDarkMode ? "bg-gray-600" : "bg-white"}
+                        rounded-lg shadow`}>
+                            <h4 className="text-base sm:text-lg font-medium ">Users Per Gender</h4>
+                            <button className={`mt-2 flex gap-2
+                                ${isDarkMode ? "bg-gray-500" : "bg-purple-200"}
+                                rounded-md items-center font-semibold px-3 sm:px-5 py-1 sm:py-2 text-sm`}>
+                                View All 
+                                <ChevronDown
+                                    onClick={() => setIsOpen(!isOpen)}
+                                    className={`cursor-pointer transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                                />
                         </button>
 
                         {/* Chart Container */}
-                        <div className="relative h-48 sm:h-64 flex items-center justify-center mt-4">
+                            <div className="relative h-48 sm:h-64 flex items-center  justify-center mt-4">
                             <Doughnut data={doughnutData} options={doughnutOptions} />
 
                             {/* Total Count in the Center */}
                             <div className="absolute text-center">
-                                <h2 className="text-xl sm:text-2xl font-bold text-gray-700">
-                                    {analyticsData.users}
+                                    <h2 className="text-xl sm:text-2xl font-bold ">
+                                        {analyticsData.users} Users
                                 </h2>
-                                <p className="text-gray-500 text-sm">Gender Distributions</p>
+                                    <p className=" text-md">Gender Distributions</p>
                             </div>
                         </div>
 
@@ -328,10 +357,10 @@ const Dashboard = () => {
                                 const percentage = ((count / analyticsData.users) * 100).toFixed(2);
                                 return (
                                     <div key={gender} className="flex items-center space-x-2">
-                                        <span className="text-gray-700 font-medium">
+                                        <span className=" font-medium">
                                             {gender.charAt(0).toUpperCase() + gender.slice(1)}:
                                         </span>
-                                        <span className="text-green-600 font-bold text-sm">{percentage}%</span>
+                                        <span className={` ${isDarkMode ? "" : "text-green-600"} font-bold text-md`}>{percentage}%</span>
                                     </div>
                                 );
                             })}
@@ -340,31 +369,35 @@ const Dashboard = () => {
 
 
                 </div>
-            </div>
-            <div>
+                </div>
 
+                <div className="overflow-x-auto w-full">
                 {/* Tabs */}
-                <div className="flex mt-8">
+                    <div className="flex mt-2 ">
                     {["Recent Users", "Recent Reports", "Recent Applications"].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`px-6 py-2 cursor-pointer text-md font-medium ${activeTab === tab ? "text-orange-600 border-b-3 border-orange-600" : "text-gray-500"
-                                }`}>
+                            className={`px-6 py-2 cursor-pointer text-md font-medium ${activeTab === tab ? "text-orange-600 border-b-4 border-orange-600" : ""}`}
+                        >
                             {tab}
                         </button>
                     ))}
                 </div>
-                {/* Table Section */}
-                {activeTab === "Recent Users" && <DashboardCard />}
-                {activeTab === "Recent Reports" && <RecentReportsCard />}
-                {activeTab === "Recent Applications" && <RecentApplicationsCard />}
 
+                    {/* Tab Content */}
+                    {/* Parent container for responsiveness */}
+                    <div className=" w-full  overflow-x-auto">
+                        {activeTab === "Recent Users" && <RecentUserCard />}
+                        {activeTab === "Recent Reports" && <RecentReportsCard />}
+                        {activeTab === "Recent Applications" && <RecentApplicationsCard />}
+                    </div>
 
+                </div>
 
             </div>
-
         </div>
+
     );
 };
 

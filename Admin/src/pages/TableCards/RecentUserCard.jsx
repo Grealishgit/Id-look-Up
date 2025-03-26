@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import { BsThreeDotsVertical, BsPencil, BsDownload } from "react-icons/bs";
+import { useOutletContext } from "react-router-dom";
 
-const TableCard = () => {
+const RecentUserCard = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [data, setData] = useState([]);
-    const [countyColors, setCountyColors] = useState({}); // Store random colors per county
+    const [countyColors, setCountyColors] = useState({});
+    const { isDarkMode } = useOutletContext();
 
     const colors = [
         "bg-blue-200 text-blue-600",
@@ -52,20 +54,21 @@ const TableCard = () => {
     };
 
     return (
-        <div className="mt-2 px-1">
+        <div className=" px-1">
             {/* Table Section */}
-            <div className="p-4 bg-white rounded-lg mt-6 shadow">
+            <div className={`p-4 
+                ${isDarkMode ? "bg-gray-600" : "bg-white "} rounded-lg mt-6 shadow`}>
                 <div className="flex flex-wrap justify-between items-center mb-4 space-y-3 sm:space-y-0">
-                    <h2 className="text-lg font-semibold text-gray-700">Recent Users</h2>
+                    <h2 className="text-lg font-semibold ">Recent Users</h2>
                     <div className="flex flex-wrap space-x-3 items-center">
                         {/* Search Input */}
                         <div className="relative md:mb-0 mb-2 w-full sm:w-auto">
                             <input
                                 type="text"
                                 placeholder="Search Here"
-                                className="border w-full sm:w-auto rounded-lg pl-10 pr-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                className="border w-full sm:w-auto rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none"
                             />
-                            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                            <FaSearch className="absolute left-3 top-3 " />
                         </div>
                         {/* Sort Button */}
                         <button className="bg-orange-600 text-white px-4 cursor-pointer py-2 rounded-lg flex items-center">
@@ -75,11 +78,12 @@ const TableCard = () => {
                 </div>
 
                 {/* Responsive Table */}
-                <div className="overflow-x-auto">
-                    <table className="w-full border-collapse min-w-max">
+                <div className="overflow-x-auto w-full">
+                    <table className="w-full border-collapse">
+
                         <thead>
-                            <tr className="bg-gray-100 text-gray-600 text-left">
-                                <th className="p-3"><input type="checkbox" /></th>
+                            <tr className="text-left">
+                                <th className="p-3">{/* <input type="checkbox" /> */}</th>
                                 <th className="p-3">Names</th>
                                 <th className="p-3">Id Number</th>
                                 <th className="p-3">Email</th>
@@ -102,7 +106,7 @@ const TableCard = () => {
                                         <td className="p-3">{item.idNumber}</td>
                                         <td className="p-3">{item.email}</td>
                                         <td className="p-3">
-                                            <span className={`px-3 py-1 rounded-md text-xs font-semibold ${countyColors[item.homeCounty] || "bg-gray-200 text-gray-600"}`}>
+                                            <span className={`px-3 py-1 rounded-md text-xs font-semibold ${countyColors[item.homeCounty] || ""}`}>
                                                 {item.homeCounty}
                                             </span>
                                         </td>
@@ -115,7 +119,7 @@ const TableCard = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="7" className="text-center p-3 text-gray-500">
+                                        <td colSpan="7" className="text-center p-3 ">
                                         No users found.
                                     </td>
                                 </tr>
@@ -126,11 +130,11 @@ const TableCard = () => {
 
                 {/* Pagination */}
                 <div className="flex flex-wrap justify-between items-center mt-4 space-y-3 sm:space-y-0">
-                    <span className="text-gray-600 text-sm">Showing {data.length} Entries</span>
+                    <span className="text-sm">Showing {data.length} Entries</span>
                     <div className="flex space-x-2">
-                        <button className="text-gray-600 px-3 py-1 border rounded-lg">Prev</button>
-                        <span className="px-3 py-1 bg-orange-600 text-white rounded-lg">1</span>
-                        <button className="text-gray-600 px-3 py-1 border rounded-lg">Next</button>
+                        <button className=" px-3 py-1 border rounded-lg">Prev</button>
+                        <span className="px-3 py-1 bg-orange-600  rounded-lg">1</span>
+                        <button className=" px-3 py-1 border rounded-lg">Next</button>
                     </div>
                 </div>
             </div>
@@ -138,4 +142,4 @@ const TableCard = () => {
     );
 };
 
-export default TableCard;
+export default RecentUserCard;

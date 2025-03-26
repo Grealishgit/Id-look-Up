@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import { BsThreeDotsVertical, BsPencil, BsDownload } from "react-icons/bs";
+import { useOutletContext } from "react-router-dom";
 
 const RecentReportsCard = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [reports, setReports] = useState([]);
+    const { isDarkMode } = useOutletContext();
 
     const locationColors = {
         Nairobi: "bg-green-200 text-blue-600",
@@ -65,20 +67,21 @@ const RecentReportsCard = () => {
     };
 
     return (
-        <div className="mt-2 px-1">
+        <div className="px-1">
             {/* Table Section */}
-            <div className="p-4 bg-white rounded-lg mt-6 shadow">
+            <div className={`p-4 
+                ${isDarkMode ? "bg-gray-600" : "bg-white "} rounded-lg mt-6 shadow`}>
                 <div className="flex flex-wrap justify-between items-center mb-4 space-y-3 sm:space-y-0">
-                    <h2 className="text-lg font-semibold text-gray-700">Recent Reports</h2>
+                    <h2 className="text-lg font-semibold ">Recent Reports</h2>
                     <div className="flex flex-wrap space-x-3 items-center">
                         {/* Search Input */}
                         <div className="relative md:mb-0 mb-2 w-full sm:w-auto">
                             <input
                                 type="text"
                                 placeholder="Search Here"
-                                className="border w-full sm:w-auto rounded-lg pl-10 pr-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                className="border w-full sm:w-auto rounded-lg pl-10 pr-4 py-2  focus:ring-2 focus:ring-orange-500 focus:outline-none"
                             />
-                            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                            <FaSearch className="absolute left-3 top-3 " />
                         </div>
                         {/* Sort Button */}
                         <button className="bg-orange-600 text-white cursor-pointer px-4 py-2 rounded-lg flex items-center">
@@ -91,7 +94,7 @@ const RecentReportsCard = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full border-collapse min-w-max">
                         <thead>
-                            <tr className="bg-gray-100 text-gray-600 text-left">
+                            <tr className=" text-left">
                                 <th className="p-3">{/* <input type="checkbox" className="cursor-pointer" /> */}</th>
                                 <th className="p-3">Names</th>
                                 <th className="p-3">Abstract Number</th>
@@ -148,11 +151,11 @@ const RecentReportsCard = () => {
 
                 {/* Pagination */}
                 <div className="flex flex-wrap justify-between items-center mt-4 space-y-3 sm:space-y-0">
-                    <span className="text-gray-600 text-sm">Showing {reports.length} Entries</span>
+                    <span className="text-sm">Showing {reports.length} Entries</span>
                     <div className="flex space-x-2">
-                        <button className="text-gray-600 px-3 py-1 cursor-pointer border rounded-lg">Prev</button>
-                        <span className="px-3 py-1 bg-orange-600 text-white rounded-lg">1</span>
-                        <button className="text-gray-600 px-3 py-1 cursor-pointer border rounded-lg">Next</button>
+                        <button className=" px-3 py-1 cursor-pointer border rounded-lg">Prev</button>
+                        <span className="px-3 py-1 bg-orange-600  rounded-lg">1</span>
+                        <button className=" px-3 py-1 cursor-pointer border rounded-lg">Next</button>
                     </div>
                 </div>
             </div>

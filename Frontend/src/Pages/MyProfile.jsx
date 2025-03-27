@@ -142,7 +142,7 @@ const MyProfile = () => {
     };
 
     return (
-        <div className="relative mt-20 p-8 bg-white -z-20">
+        <div className="relative mt-20 p-8 bg-white z-0">
             {/* Loading Overlay */}
             {loading && (
                 <div className="absolute inset-4 flex items-center justify-center bg-white bg-opacity-75 z-50">

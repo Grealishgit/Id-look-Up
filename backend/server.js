@@ -9,35 +9,16 @@ import authenticateToken from "./middlewares/authUser.js";
 
 // App config
 const app = express();
-app.use(express.json());
 const port = process.env.PORT || 4000;
+connectDB();
+
 
 // Middleware
-
-const allowedOrigins = [
-    process.env.ADMIN_FRONTEND_URL,
-    process.env.USER_FRONTEND_URL,
-].filter(Boolean);
-
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true); // ✅ Allow request
-        } else {
-            console.log("❌ Blocked by CORS:", origin);
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization,token",
-    credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.use(cors())
 
 // Database connection
-connectDB();
+
 
 // API Endpoints
 app.use("/api/users", userRoutes);

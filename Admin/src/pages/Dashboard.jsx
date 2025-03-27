@@ -137,7 +137,7 @@ const Dashboard = () => {
         const fetchIdReports = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reported-ids`);
-                const result = await response.json();
+                const result = response.data; // ✅
 
                 if (result.success) {
                     const lostIds = result.data;
@@ -169,12 +169,13 @@ const Dashboard = () => {
     }, []);
 
 
+
     //Progress bar for the Top County with most lost Passports
     useEffect(() => {
         const fetchPassportReports = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reported-passports`);
-                const result = await response.json();
+                const result = await response.data;
 
                 if (result.success) {
                     const lostPassports = result.data;
@@ -267,7 +268,7 @@ const Dashboard = () => {
                                     <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis dataKey="county" />
                                         <YAxis domain={[18, 100]} />
-                                    <Tooltip />
+                                        {/* <Tooltip /> */}
                                     <Bar dataKey="age" fill="#03a9f4" />
                                 </BarChart>
                             </ResponsiveContainer>

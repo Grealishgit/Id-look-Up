@@ -13,8 +13,8 @@ const RecentApplicationsCard = () => {
 
     useEffect(() => {
         const fetchApplications = async () => {
-            try {
-                const response = await fetch("http://localhost:4000/applications");
+            try {   
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`); 
                 const result = await response.json();
 
                 if (result.success) {

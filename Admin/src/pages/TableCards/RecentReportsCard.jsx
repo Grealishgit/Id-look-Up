@@ -22,7 +22,7 @@ const RecentReportsCard = () => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await axios.get("http://localhost:4000/reports");
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reports`);
                 const { lostIdReports, lostPassportReports } = response.data.data;
 
                 // Format data for table display

@@ -20,9 +20,9 @@ app.use(cors())
 
 
 // API Endpoints
-app.use("/api/users", userRoutes);
-app.use("/api/reports", reportRoutes);
-app.use("/api/apply", applyRoutes);
+app.use("/", userRoutes);
+app.use("/", reportRoutes);
+app.use("/", applyRoutes);
 
 // Protected Route Example
 app.get("/dashboard", authenticateToken, (req, res) => {

@@ -74,8 +74,7 @@ const Dashboard = () => {
     //Getting All Users
     const fetchTotalUsers = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/get-users");
-
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/get-users`);
             const { Male = 0, Female = 0, Other = 0 } = response.data?.data || {};
             const totalUsers = response.data?.totalUsers || 0;
 
@@ -95,9 +94,8 @@ const Dashboard = () => {
     //Getting All Applications
     const fetchTotalApplications = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/applications");
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`);
             const totalApplications = response.data.data.lostIdApplications.length + response.data.data.formUploads.length;
-
             setAnalyticsData((prev) => ({
                 ...prev,
                 totalApplications,
@@ -114,7 +112,7 @@ const Dashboard = () => {
     //Getting All Reports
     const fetchReports = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/reports");
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reports`);
             // Ensure you use the exact keys returned by the backend
             const totalReports =
                 response.data.data.lostIdReports.length + response.data.data.lostPassportReports.length;
@@ -138,7 +136,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchIdReports = async () => {
             try {
-                const response = await fetch("http://localhost:4000/reported-ids");
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reported-ids`);
                 const result = await response.json();
 
                 if (result.success) {
@@ -175,7 +173,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchPassportReports = async () => {
             try {
-                const response = await fetch("http://localhost:4000/reported-passports");
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/reported-passports`);
                 const result = await response.json();
 
                 if (result.success) {

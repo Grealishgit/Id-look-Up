@@ -38,7 +38,7 @@ const ReportPassport = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:4000/lost-passport', formData, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/lost-passport`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,

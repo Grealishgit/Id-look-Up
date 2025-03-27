@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { FaCircleUser } from "react-icons/fa6";
 import { formatDate } from '../Components/utils';
 import LoadingSpinner from '../Components/LoadingSpinner';
+import axios from 'axios';
 
 const MyProfile = () => {
     const [user, setUser] = useState({
@@ -24,38 +25,42 @@ const MyProfile = () => {
 
     const navigate = useNavigate();
 
+    // Update `editedUser` when entering edit mode
+    const handleEditProfile = () => {
+        setEditedUser({ ...user });
+        setIsEditing(true);
+    };
+
+
+
     // Fetch user profile
     useEffect(() => {
         const fetchUserProfile = async () => {
             const token = localStorage.getItem("token");
             if (!token) {
-                navigate("/login");
+                toast.error("No token found, redirecting to login...");
                 return;
             }
 
             try {
-                const response = await fetch("http://localhost:4000/userdata", {
-                    method: "GET",
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/userdata`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
+                        "Content-Type": "application/json"
+                    }
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser(data.user);
-                    setEditedUser(data.user);
-                } else {
-                    toast.error("Failed to fetch user profile");
-                }
+                setUser(response.data.user);
+                setEditedUser(response.data.user); 
             } catch (error) {
                 toast.error("Error fetching profile data");
             }
         };
 
         fetchUserProfile();
-    }, [navigate]);
+    }, []);
+
+
 
     // Handle input changes
     const handleEditChange = (e) => {
@@ -64,14 +69,21 @@ const MyProfile = () => {
     };
 
     // Handle image change
-    const handleImageChange = (e) => {
-        setProfileImage(e.target.files[0]);
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setUser((prevUser) => ({
+                ...prevUser,
+                image: imageUrl,
+            }));
+            setProfileImage(file);
+        }
     };
 
     // Update user profile
     const handleSaveChanges = async () => {
         setLoading(true);
-
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -91,28 +103,36 @@ const MyProfile = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:4000/update-profile", {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
-            });
+            const response = await axios.put(
+                `${import.meta.env.VITE_BACKEND_URL}/update-profile`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        // DO NOT set 'Content-Type', let Axios handle it
+                    }
+                }
+            );
 
-            if (response.ok) {
-                const updatedData = await response.json();
-                setUser(updatedData.user);
+            if (response.data.success) {
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    ...response.data.user
+                }));
                 setIsEditing(false);
                 toast.success("Profile updated successfully!");
             } else {
-                toast.error("Failed to update profile");
+                toast.error(response.data.message || "Failed to update profile");
             }
         } catch (error) {
-            toast.error("Error updating profile");
+            toast.error(error.response?.data?.message || "Error updating profile");
         }
-
-        setLoading(false); // Stop loading
+        setLoading(false);
     };
+
+
+
+
 
     // Handle logout
     const handleLogout = () => {
@@ -143,7 +163,7 @@ const MyProfile = () => {
                         <img
                             src={user.image}
                             alt="User Avatar"
-                            className="w-24 h-24 rounded-full border-2 border-gray-300"
+                            className="w-24 h-24 rounded-full border-2 border-gray-300 object-cover"
                         />
                     ) : (
                         <FaCircleUser className="w-24 h-24 text-gray-400 border-2 border-gray-300 rounded-full p-2" />
@@ -152,6 +172,7 @@ const MyProfile = () => {
                         <input type="file" onChange={handleImageChange} className="mt-2 text-sm" />
                     )}
                 </div>
+
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">
                         {isEditing ? (

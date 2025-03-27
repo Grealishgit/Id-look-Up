@@ -11,7 +11,7 @@ const Login = () => {
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); // To handle navigation after login
+    const navigate = useNavigate(); 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,10 +20,10 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // Set loading state when form is submitted
+        setLoading(true); 
 
         try {
-            const response = await axios.post('http://localhost:4000/login', formData);
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, formData);
             toast.success("Login successfully");
 
             // Store the token and user data in localStorage
@@ -47,46 +47,46 @@ const Login = () => {
         >
             <form
                 onSubmit={handleSubmit}
-                className="bg-white p-8 rounded shadow-md max-w-md w-full"
+                className="bg-slate-400 p-10 rounded-2xl shadow-md max-w-md w-full min-h-[600px]"
             >
-                <h2 className="text-2xl font-bold items-center justify-center text-center flex gap-3 mb-6">
+                <h2 className="text-2xl mt-10 font-bold items-center justify-center text-center flex gap-3 mb-6">
                     <FaLock />
                     Login</h2>
                 {error && (
                     <p className="text-red-500 text-center mb-4">{error}</p>
                 )}
                 <div className="mb-4">
-                    <label className="block text-gray-700">Email</label>
+                    <label className="block text-black">Email</label>
                     <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border rounded"
+                        className="w-full px-4 py-2 border rounded-xl"
                         required
                     />
                 </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Password</label>
+                <div className="mb-4 ">
+                    <label className="block text-black">Password</label>
                     <input
                         type="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border rounded"
+                        className="w-full px-4 py-2 border rounded-xl"
                         required
                     />
                 </div>
                 <button
                     type="submit"
-                    className={`w-full bg-red-500 text-white py-3 px-4 rounded hover:bg-green-600 ${loading ? 'bg-gray-400 cursor-not-allowed' : ''}`}
+                    className={`w-full bg-black text-white mt-20 py-3 px-4 rounded-2xl hover:bg-orange-600 ${loading ? 'bg-gray-400 cursor-not-allowed' : ''}`}
                     disabled={loading}
                 >
                     {loading ? 'Logging in...' : 'Login'}
                 </button>
-                <p className="mt-4 text-center font-semibold text-gray-600">
+                <p className="mt-4 text-center font-semibold text-black">
                     Don't have an account?{' '}
-                    <a href="/sign-up" className="text-green-500 underline underline-offset-1 hover:underline">
+                    <a href="/sign-up" className="text-orange-500 text-lg underline underline-offset-1 hover:underline">
                         Sign Up
                     </a>
                 </p>

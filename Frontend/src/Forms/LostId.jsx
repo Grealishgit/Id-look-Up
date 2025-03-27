@@ -79,7 +79,8 @@ const LostId = () => {
         data.append("passportPhoto", formData.passportPhoto); // Ensure this matches backend
 
         try {
-            const response = await axios.post('http://localhost:4000/apply-lostId', data, {
+
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/apply-lostId`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',

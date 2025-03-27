@@ -6,6 +6,8 @@ import { FaAngleDown, FaFileSignature, FaHome } from "react-icons/fa";
 import { FaCircleUser, FaPassport } from "react-icons/fa6";
 import { IoIosNotifications, IoMdInformationCircle } from "react-icons/io";
 import { MdFindInPage, MdContactMail, MdReport, MdLogin, MdWbSunny, MdSettings } from "react-icons/md";
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 
 
@@ -28,28 +30,39 @@ const Navbar = () => {
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-
+            const token = localStorage.getItem("token");
+            if (!token) {
+                /* navigate("/login"); */
+                return;
+            }
 
             try {
-                const response = await fetch('http://localhost:4000/userdata', {
-                    method: 'GET',
+                /* console.log("Fetching user profile..."); */
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/userdata`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser(data.user);
+                /*  console.log("Server response:", response.data); */
+
+                if (response.data.success) {
+                    setUser(response.data.user);
+
+                } else {
+                    /* console.error("Failed response:", response.data); */
+                    toast.error("Failed to fetch user profile");
                 }
             } catch (error) {
-                console.error('Error fetching profile data:', error);
+                /* console.error("Fetch error:", error); */
+                toast.error("Error fetching profile data");
             }
         };
 
         fetchUserProfile();
-    }, []);
+    }, [navigate]);
+
+
 
 
     return (

@@ -38,7 +38,7 @@ const Report = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:4000/lost-id', formData, {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/lost-id`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

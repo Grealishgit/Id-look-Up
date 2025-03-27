@@ -15,7 +15,7 @@ const RecentApplicationsCard = () => {
         const fetchApplications = async () => {
             try {   
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`); 
-                const result = await response.json();
+                const result = await response.data;
 
                 if (result.success) {
                     // Combine lostIdApplications and formUploads into one array

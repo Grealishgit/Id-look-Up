@@ -40,9 +40,9 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // API Endpoints
-app.use("/", userRoutes);
-app.use("/", reportRoutes)
-app.use("/", applyRoutes)
+app.use("/api/users", userRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/apply", applyRoutes);
 
 // Protected Route Example
 app.get("/dashboard", authenticateToken, (req, res) => {

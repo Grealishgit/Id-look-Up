@@ -20,25 +20,32 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); 
+        setLoading(true);
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, formData);
-            toast.success("Login successfully");
+
+            // Check if the response is actually successful
+            if (response.status !== 200 || !response.data.token) {
+                throw new Error("Invalid credentials");
+            }
+
+            toast.success("Login successful");
 
             // Store the token and user data in localStorage
             localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user)); // Save user data
-
-            // Redirect to home page after successful login
+            localStorage.setItem('user', JSON.stringify(response.data.user));
             navigate('/');
+
         } catch (error) {
+            console.error("Login Error:", error.response?.data || error.message); 
             toast.error("Invalid Email or Password");
             setError('Invalid credentials, please try again.');
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div
@@ -62,7 +69,7 @@ const Login = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border rounded-xl"
+                        className="w-full px-4 bg-stone-50 border-4 border-slate-600 py-2 rounded-xl"
                         required
                     />
                 </div>
@@ -73,7 +80,7 @@ const Login = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border rounded-xl"
+                        className="w-full px-4 py-2 bg-stone-50 border-4 border-slate-600 rounded-xl"
                         required
                     />
                 </div>

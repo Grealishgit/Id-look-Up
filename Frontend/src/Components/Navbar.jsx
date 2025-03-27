@@ -68,10 +68,10 @@ const Navbar = () => {
     return (
         <div>
             {/* Navbar (Desktop & Mobile) */}
-            <nav className="bg-gray-800 text-white p-4 flex items-center fixed top-0 left-0 w-full z-50">
+            <nav className="bg-gray-800 text-white p-2 flex items-center fixed top-0 left-0 w-full z-30">
                 {/* Logo - Left */}
                 <div className="font-bold text-4xl">
-                    <a href="/">ID <span className="text-green-600">Look</span>-<span className="text-red-600">Up</span>.</a>
+                    <a href="/">ID <span className="text-green-600">Look</span> - <span className="text-red-600">Up</span>.</a>
                 </div>
 
                 {/* Centered Navigation Links (Desktop) */}

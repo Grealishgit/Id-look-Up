@@ -1,10 +1,10 @@
 import React from 'react';
-import { FaHeart } from 'react-icons/fa';
+
 
 const Footer = () => {
     const token = localStorage.getItem('token');
     return (
-        <div className="bg-gray-800 text-white py-8 mt-12">
+        <div className="bg-gray-800 text-white py-8 mt-12  0 w-full">
             <div className="max-w-screen-xl mx-auto px-6">
                 {/* Footer Content */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

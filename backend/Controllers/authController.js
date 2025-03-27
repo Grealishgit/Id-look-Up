@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import User from '../models/userModel.js';
 import cloudinary from '../config/cloudinaryConfig.js';
 import generateToken from '../utils/generateToken.js';
@@ -14,8 +14,8 @@ export const signUp = async (req, res) => {
         if (userExists) {
             return res.json({ success: false, messge: "User Already Exists" })
         }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
             fname,

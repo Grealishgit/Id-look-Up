@@ -2,28 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { countiesData } from '../Components/utils.js';
 
-const counties = [
-    'Baringo', 'Bomet', 'Bungoma', 'Busia', 'Elgeyo Marakwet', 'Embu', 'Garissa', 'Homa Bay', 'Isiolo',
-    'Kajiado', 'Kakamega', 'Kericho', 'Kiambu', 'Kilifi', 'Kirinyaga', 'Kisii', 'Kisumu', 'Kitui',
-    'Kwale', 'Laikipia', 'Lamu', 'Machakos', 'Makueni', 'Mandera', 'Marsabit', 'Meru', 'Migori',
-    'Mombasa', 'Murang\'a', 'Nairobi', 'Nakuru', 'Nandi', 'Narok', 'Nyanza', 'Samburu', 'Siaya', 'Taita Taveta',
-    'Tana River', 'Tharaka Nithi', 'Trans-Nzoia', 'Uasin Gishu', 'Vihiga', 'Wajir', 'West Pokot', 'Nyandarua',
-    'Nyeri', 'Zanzibar'
-];
-
-const countySubCounties = {
-    Nairobi: ['Kasarani', 'Starehe', 'Westlands', 'Lang’ata'],
-    Kakamega: ['Kakamega Central', 'Kakamega North', 'Kakamega South', 'Mumias-East', 'Mumias-West', 'Khayega', 'Khwisero'],
-    Kiambu: ['Kiambu Town', 'Ruiru', 'Thika'],
-    Mombasa: ['Mombasa Town', 'Likoni', 'Changamwe'],
-    // Add other counties with their sub-counties as needed
-};
 
 const LostId = () => {
     const [image, setImage] = useState(null);
     const [selectedCounty, setSelectedCounty] = useState('');
-    const [subCounties, setSubCounties] = useState([]);
+    const [filteredSubCounties, setFilteredSubCounties] = useState([]); 
     const [formData, setFormData] = useState({
         idNumber: '',
         firstName: '',
@@ -48,8 +33,17 @@ const LostId = () => {
     const handleCountyChange = (e) => {
         const county = e.target.value;
         setSelectedCounty(county);
-        setSubCounties(countySubCounties[county] || []);
-        setFormData({ ...formData, county });
+
+        // Retrieve sub-counties from the imported data
+        const selectedCountyData = countiesData.find(c => c.name === county);
+        const newSubCounties = selectedCountyData ? selectedCountyData.subCounties : [];
+
+
+        setFilteredSubCounties(newSubCounties);
+        setFormData({ ...formData, county, subCounty: '' });
+        /* console.log("Selected County:", county);
+        console.log("Available Sub-Counties:", newSubCounties); */
+
     };
 
     const handleInputChange = (e) => {
@@ -76,7 +70,7 @@ const LostId = () => {
         data.append("SubCounty", formData.subCounty);
         data.append("Constituency", formData.constituency);
         data.append("Ward", formData.ward);
-        data.append("passportPhoto", formData.passportPhoto); // Ensure this matches backend
+        data.append("passportPhoto", formData.passportPhoto); 
 
         try {
 
@@ -103,7 +97,7 @@ const LostId = () => {
                 });
                 setImage(null);
                 setSelectedCounty('');
-                setSubCounties([]);
+                setFilteredSubCounties([]);
             } else {
                 toast.error(response.data.message || 'Failed to submit application. Please try again.');
             }
@@ -223,11 +217,12 @@ const LostId = () => {
                                 required
                             >
                                 <option value="">Select County</option>
-                                {counties.map((county, index) => (
-                                    <option key={index} value={county}>{county}</option>
+                                {countiesData.map((county, index) => (
+                                    <option key={index} value={county.name}>{county.name}</option>
                                 ))}
                             </select>
                         </div>
+
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
@@ -241,10 +236,11 @@ const LostId = () => {
                                 required
                             >
                                 <option value="">Select Sub-County</option>
-                                {subCounties.map((subCounty, index) => (
+                                {filteredSubCounties.map((subCounty, index) => (
                                     <option key={index} value={subCounty}>{subCounty}</option>
                                 ))}
                             </select>
+
                         </div>
                         <div>
                             <label htmlFor="constituency" className="block text-gray-700">Constituency</label>

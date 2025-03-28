@@ -78,20 +78,37 @@ const IdApplications = () => {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`);
             const lostIdApplications = response.data.data.lostIdApplications;
 
-            const countyCounts = lostIdApplications.reduce((acc, app) => {
-                acc[app.county] = (acc[app.county] || 0) + 1;
+            // Filter out entries with undefined county
+            const validApplications = lostIdApplications.filter(app => app.County);
+
+            // Count occurrences of each county
+            const countyCounts = validApplications.reduce((acc, app) => {
+                acc[app.County] = (acc[app.County] || 0) + 1;
                 return acc;
             }, {});
 
-            const commonCounties = Object.values(countyCounts).filter((count) => count > 2).length;
+            // Convert to array, sort, and get the top 5 counties
+            const sortedCounties = Object.entries(countyCounts)
+                .map(([name, count]) => ({ name, count }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 5);
+
+            // Count how many counties appear more than once
+            const commonCounties = Object.values(countyCounts).filter(count => count > 1).length;
+
+            console.log("Common Counties Count:", commonCounties);
+
             setAnalyticsData((prev) => ({
                 ...prev,
                 commonCounties,
+                highestCounties: sortedCounties,
             }));
         } catch (error) {
             console.error("Error fetching common counties:", error);
         }
     };
+
+
 
     useEffect(() => {
         fetchTotalApplications();
@@ -119,10 +136,10 @@ const IdApplications = () => {
                 <div className="lg:col-span-2 grid grid-cols-2 gap-6">
                     {[
 
-                        { title: "Total Applications", value: analyticsData.totalApplications, percentage: "+1.5%", color: "text-green-500", bg: "bg-purple-100", dark: "bg-gray-600" },
+                        { title: "Total Applications", value: analyticsData.totalApplications, percentage: "+1.5%", color: "text-pink-500", bg: "bg-purple-300", dark: "bg-gray-600" },
                         { title: "Total County Applications", value: analyticsData.totalCountyApplications, percentage: "-0.23%", color: "text-red-500", bg: "bg-red-100", dark: "bg-gray-600" },
-                        { title: "Invalid Applications", value: analyticsData.invalidApplications, percentage: "+0.67%", color: "text-green-500", bg: "bg-green-100", dark: "bg-gray-600" },
-                        { title: "Common Counties", value: analyticsData.commonCounties, percentage: "+0.53%", color: "text-green-500", bg: "bg-yellow-100", dark: "bg-gray-600" },
+                        { title: "Invalid Applications", value: analyticsData.invalidApplications, percentage: "+0.67%", color: "text-orange-500", bg: "bg-emerald-200", dark: "bg-gray-600" },
+                        { title: "Common Counties", value: analyticsData.commonCounties, percentage: "+0.53%", color: "text-green-500", bg: "bg-yellow-200", dark: "bg-gray-600" },
 
                     ].map((stat, index) => (
                         <div key={index} className={`p-4 ${isDarkMode ? stat.dark : stat.bg} rounded-lg shadow-md`}>
@@ -137,22 +154,21 @@ const IdApplications = () => {
                     ))}
                 </div>
 
-                {/* Team Members */}
-                <div className={`p-4 ${isDarkMode ? "bg-gray-600" : "bg-white"}  rounded-lg shadow-md`}>
-                    <h2 className="text-lg font-semibold mb-3">Team Members</h2>
-                    {[
-                        { name: "Melissa Smith", role: "UI Developer" },
-                        { name: "Jason Momoa", role: "React Developer" },
-                        { name: "Kamala Hars", role: "Testing" },
-                        { name: "Diego Sanch", role: "Angular Developer" },
-                        { name: "Jake Sully", role: "Web Designer" },
-                    ].map((member, index) => (
-                        <div key={index} className="flex justify-between py-2 border-b last:border-none">
-                            <span>{member.name}</span>
-                            <span className=" text-sm">{member.role}</span>
-                        </div>
-                    ))}
+                {/*Highest County Applications */}
+                <div className={`p-4 ${isDarkMode ? "bg-gray-600" : "bg-white"} rounded-lg shadow-md`}>
+                    <h2 className="text-lg font-semibold mb-3">Highest County Applications</h2>
+                    {analyticsData.highestCounties?.length > 0 ? (
+                        analyticsData.highestCounties.map((county, index) => (
+                            <div key={index} className="flex justify-between py-2 border-b last:border-none">
+                                <span>{county.name}</span>
+                                <span className="text-sm">{county.count} Applications</span>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-gray-500">No data available</p>
+                    )}
                 </div>
+
 
                 {/* Daily Tasks */}
                 <div className={` p-4 ${isDarkMode ? "bg-gray-600" : "bg-white"}  rounded-lg shadow-md`}>

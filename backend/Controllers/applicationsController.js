@@ -81,13 +81,26 @@ export const getUserLostIdApplications = async (req, res) => {
 
 export const getAllLostIdApplications = async (req, res) => {
     try {
-        const applications = await ApplyLostId.find(); 
-        res.status(200).json({ applications });
+        const { page = 1, limit = 10 } = req.query; // Default to page 1, 10 items per page
+        const lostIdApplications = await ApplyLostId.find()
+            .limit(limit * 1)  // Convert string to number
+            .skip((page - 1) * limit)
+            .sort({ createdAt: -1 }); // Sorting by newest first
+
+        const totalApplications = await ApplyLostId.countDocuments();
+
+        res.status(200).json({
+            success: true,
+            data: lostIdApplications,
+            totalPages: Math.ceil(totalApplications / limit),
+            currentPage: Number(page),
+        });
     } catch (error) {
         console.error("Error getting all applications:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: error.message || "Server error" });
     }
 };
+
 
 
 //After implementing the Admin section, the code will look like this:

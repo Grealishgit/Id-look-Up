@@ -60,7 +60,7 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
     return (
         <div
             className={`transition-all duration-300 ease-in-out text-lg border-2 z-50
-        ${isDarkMode ? 'bg-gray-700 text-white border-[#444]' : 'bg-white text-black border-[rgba(0,0,0,0.08)]'}
+        ${isDarkMode ? 'bg-gray-700 text-white border-[#444]' : 'bg-gray-100 text-black border-[rgba(0,0,0,0.08)]'}
         ${isOpen ? 'md:w-64 w-50' : 'w-17'}`}
         >
             <div className="p-5 flex justify-between items-center">

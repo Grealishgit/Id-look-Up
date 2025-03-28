@@ -34,7 +34,7 @@ const Navbar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
 
     return (
         <div className={`fixed  top-0 left-0 ${isOpen ? "md:left-64" : "md:left-17 "} right-0 flex justify-between items-center
-        ${isDarkMode ? "bg-gray-700 text-white" : "bg-white"}
+        ${isDarkMode ? "bg-gray-700 text-white" : "bg-gray-100"}
          shadow-md px-4 md:px-10 p-4 transition-all duration-300 z-40`}>
             {/* Left Section */}
             <div className="flex items-center gap-3">

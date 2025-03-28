@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { BsThreeDotsVertical, BsPencil, BsDownload } from "react-icons/bs";
 import { useOutletContext } from "react-router-dom";
+import axios from "axios";
+
 
 const RecentApplicationsCard = () => {
     const [applications, setApplications] = useState([]);
@@ -13,14 +15,12 @@ const RecentApplicationsCard = () => {
 
     useEffect(() => {
         const fetchApplications = async () => {
-            try {   
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`); 
-                const result = await response.data;
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`);
+                const result = response.data;
 
                 if (result.success) {
-                    // Combine lostIdApplications and formUploads into one array
-                    const idApplications = [...result.data.lostIdApplications].reverse();
-                    setApplications(idApplications);
+                    setApplications(result.data.lostIdApplications.reverse());
                 } else {
                     setError("Failed to fetch applications.");
                 }
@@ -33,6 +33,8 @@ const RecentApplicationsCard = () => {
 
         fetchApplications();
     }, []);
+
+
 
     const handleSelectRow = (id) => {
         setSelectedRows((prev) =>

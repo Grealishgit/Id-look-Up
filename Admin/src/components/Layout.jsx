@@ -11,7 +11,7 @@ const Layout = () => {
         <>
             {/* Main Layout Wrapper */}
             <div className={`h-screen flex
-                ${isDarkMode ? "bg-gray-700" : "bg-[#F3F5F7]"}
+                ${isDarkMode ? "bg-gray-700" : "bg-gray-100"}
                 `}>
                 {/* Sidebar (Fixed) */}
                 <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />

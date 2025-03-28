@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { BsThreeDotsVertical, BsPencil, BsDownload } from "react-icons/bs";
+import { useOutletContext } from "react-router-dom";
 
 const TableCard = () => {
     const [selectedRows, setSelectedRows] = useState([]);
-
+    const { isDarkMode } = useOutletContext()
     const data = [
         { id: 1, name: "Mayor Kelly", category: "Manufacture", email: "mayorkelly@gmail.com", location: "Germany", date: "Sep 15 - Oct 12, 2023", avatar: "https://i.pravatar.cc/40?img=1" },
         { id: 2, name: "Andrew Garfield", category: "Development", email: "andrewgarfield@gmail.com", location: "Canada", date: "Apr 10 - Dec 12, 2023", avatar: "https://i.pravatar.cc/40?img=2" },
@@ -32,21 +33,21 @@ const TableCard = () => {
         <div className="mt-20 px-1">
 
             {/* Table Section */}
-            <div className="p-4 bg-white rounded-lg mt-6 shadow">
+            <div className={`p-4  ${isDarkMode ? "text-white bg-gray-500" : "text-black bg-white"} rounded-lg mt-6 shadow`}>
                 <div className="flex flex-wrap justify-between items-center mb-4 space-y-3 sm:space-y-0">
-                    <h2 className="text-lg font-semibold text-gray-700">ID Applications</h2>
+                    <h2 className="text-lg font-semibold ">ID Applications</h2>
                     <div className="flex flex-wrap space-x-3 items-center">
                         {/* Search Input */}
                         <div className="relative md:mb-0 mb-2 w-full sm:w-auto">
                             <input
                                 type="text"
                                 placeholder="Search Here"
-                                className="border w-full sm:w-auto rounded-lg pl-10 pr-4 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                className="border w-full sm:w-auto rounded-lg pl-10 pr-4 py-2  focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                             />
-                            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                            <FaSearch className="absolute left-3 top-3 " />
                         </div>
                         {/* Sort Button */}
-                        <button className="bg-orange-600 text-white px-4 py-2  rounded-lg flex items-center">
+                        <button className="bg-orange-600  px-4 py-2  rounded-lg flex items-center">
                             Sort By <BsThreeDotsVertical className="ml-2" />
                         </button>
                     </div>
@@ -56,8 +57,8 @@ const TableCard = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full border-collapse min-w-max">
                         <thead>
-                            <tr className="bg-gray-100 text-gray-600 text-left">
-                                <th className="p-3"><input type="checkbox" /></th>
+                            <tr className=" text-left">
+                                <th className="p-3">{/* <input type="checkbox" /> */}</th>
                                 <th className="p-3">Sales Rep</th>
                                 <th className="p-3">Category</th>
                                 <th className="p-3">Mail</th>
@@ -96,12 +97,12 @@ const TableCard = () => {
 
                 {/* Pagination */}
                 <div className="flex flex-wrap justify-between items-center mt-4 space-y-3 sm:space-y-0">
-                    <span className="text-gray-600 text-sm">Showing 5 Entries</span>
+                    <span className="text-sm">Showing 5 Entries</span>
                     <div className="flex space-x-2">
-                        <button className="text-gray-600 px-3 py-1 border rounded-lg">Prev</button>
+                        <button className=" px-3 py-1 border rounded-lg">Prev</button>
                         <span className="px-3 py-1 bg-orange-600 text-white rounded-lg">1</span>
-                        <button className="text-gray-600 px-3 py-1 border rounded-lg">2</button>
-                        <button className="text-gray-600 px-3 py-1 border rounded-lg">Next</button>
+                        <button className=" px-3 py-1 border rounded-lg">2</button>
+                        <button className="px-3 py-1 border rounded-lg">Next</button>
                     </div>
                 </div>
             </div>

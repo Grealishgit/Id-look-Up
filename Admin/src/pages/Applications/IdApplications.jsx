@@ -279,8 +279,8 @@ const IdApplications = () => {
 
                 {/* Project Analysis */}
                 <div className={`lg:col-span-2 ${isDarkMode ? " bg-gray-600" : "bg-white"} p-4 rounded-lg shadow-md`}>
-                    <h2 className="text-lg font-semibold mb-3">Project Analysis</h2>
-                    <p className="text-sm">Graph Component Placeholder</p>
+                    <h2 className="text-lg font-semibold mb-3">Application Analysis</h2>
+                    <p className="text-sm">Overall overview of Applications</p>
 
                     <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={analyticsData.countyApplications}>

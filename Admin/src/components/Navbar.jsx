@@ -2,35 +2,36 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch, FaMoon, FaShoppingCart, FaBell, FaCog } from "react-icons/fa";
 import { IoLanguage } from "react-icons/io5";
+import { IoTimerOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
-import { LuExpand } from "react-icons/lu";
 import { FiUser, FiLock } from "react-icons/fi";
 import { MdHelpOutline } from "react-icons/md";
 import { RiSettings2Line } from "react-icons/ri";
 import { Sun } from "lucide-react";
+import { getRemainingTimeUntil5PM } from "../utils/utils";
 
 const Navbar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
     const navigate = useNavigate();
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [dateTime, setDateTime] = useState(new Date());
+    const [timeLeft, setTimeLeft] = useState(getRemainingTimeUntil5PM());
+
     useEffect(() => {
         const timer = setInterval(() => setDateTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
 
-    const formatDate = (date) => {
-        const months = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
-        return `${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')}, ${date.getFullYear()}`;
-    };
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setTimeLeft(getRemainingTimeUntil5PM());
+        }, 1000);
 
-    const formatTime = (date) =>
-        `${String(date.getHours()).padStart(2, "0")}:${String(
-            date.getMinutes()
-        ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+        // Clean up the interval on component unmount
+        return () => clearInterval(intervalId);
+    }, []);
+
+
 
     return (
         <div className={`fixed  top-0 left-0 ${isOpen ? "md:left-64" : "md:left-17 "} right-0 flex justify-between items-center
@@ -60,12 +61,18 @@ const Navbar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                 </div>
 
 
-                <div className="md:block hidden">
-                    <div className="flex gap-3 items-center">
-                        <p className="text-orange-400 items-center font-bold text-2xl">{formatDate(dateTime)}</p>
-                        <h1 className="text-2xl font-bold tracking-wide w-[90px]">{formatTime(dateTime)}</h1>
+                <div className="md:flex justify-between items-center gap-6">
+
+
+                    {/* Second block with time left */}
+                    <div className="text-md md:block hidden font-semibold">
+                        <span className=" font-bold ml-2 text-xl">Time Left Today: </span>
+                        <span className={`text-xl ${isDarkMode ? "text-orange-400" : "text-orange-500"}`}>
+                            {timeLeft}
+                        </span>
                     </div>
                 </div>
+
 
             </div>
 
@@ -73,21 +80,17 @@ const Navbar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
             <div className="flex items-center gap-4">
                 {/* Visible on large screens (md and above) */}
                 <div className="hidden md:flex gap-4">
-                    <IconButton icon={<IoLanguage />} />
-
+                    {/*  <IconButton icon={<IoLanguage />} /> */}
                     {isDarkMode ? <IconButton icon={<Sun size={15} onClick={() => setIsDarkMode(false)} />} />
                         : <IconButton icon={<FaMoon onClick={() => setIsDarkMode(true)} />} />}
-
-
-                    <IconButton icon={<FaShoppingCart />} badge={0} />
                     <IconButton icon={<FaBell />} badge={5} />
-                    <IconButton icon={<LuExpand />} />
+                    {/*   <IconButton icon={<LuExpand />} /> */}
                 </div>
 
                 {/* Visible on small screens */}
                 <div className="flex md:hidden gap-4">
                     <IconButton icon={<CiSearch />} />
-                    <IconButton icon={<IoLanguage />} />
+
                     {isDarkMode ? <IconButton icon={<Sun size={15} onClick={() => setIsDarkMode(false)} />} />
                         : <IconButton icon={<FaMoon onClick={() => setIsDarkMode(true)} />} />}
                 </div>

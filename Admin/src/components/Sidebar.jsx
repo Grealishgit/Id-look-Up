@@ -1,10 +1,12 @@
 import { ChevronDown, ClipboardPlus, FileInput, FileSearch, FileUser, LayoutDashboard, Menu, Moon, Settings, Sun, X } from 'lucide-react';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
     const navigate = useNavigate();
     const [activeDropdown, setActiveDropdown] = useState('');
+    const [dateTime, setDateTime] = useState(new Date());
 
     const navItems = [
         { title: 'Dashboard', icon: LayoutDashboard, hasDropdown: false, route: '/' },
@@ -53,6 +55,29 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
         { title: 'Settings', icon: Settings, hasDropdown: false, route: '/settings' }
     ];
 
+    const formatDate = (date) => {
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        return `${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')}, ${date.getFullYear()}`;
+    };
+
+    const formatTime = (date) =>
+        `${String(date.getHours()).padStart(2, "0")}:${String(
+            date.getMinutes()
+        ).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+
+    // Timer to update the dateTime every second
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setDateTime(new Date());
+        }, 1000);
+
+        // Clean up the interval on component unmount
+        return () => clearInterval(intervalId);
+    }, []);
+
     const toggleDropdown = (title) => {
         setActiveDropdown(activeDropdown === title ? '' : title);
     };
@@ -81,8 +106,16 @@ const Sidebar = ({ isOpen, setIsOpen, isDarkMode, setIsDarkMode }) => {
                     {isOpen ? <X size={25} strokeWidth={1.5} /> : <Menu size={25} strokeWidth={1.5} />}
                 </button>
             </div>
-
-            <nav className="mt-6">
+            {isOpen ?
+                <div className="md:block hidden">
+                    <div className="grid items-center justify-center">
+                        <p className=" font-bold text-md">{formatDate(dateTime)}</p>
+                        <h1 className="text-md font-bold gap-2 items-center ml-5  text-orange-400 tracking-wide w-[90px]">{formatTime(dateTime)}
+                            {/* <span className={`${isDarkMode ? "text-white" : "text-black"}`}><IoTimerOutline /></span> */} </h1>
+                    </div>
+                </div>
+                : ""}
+            <nav className="mt-2">
                 {navItems.map((item) => (
                     <div key={item.title}>
                         <div

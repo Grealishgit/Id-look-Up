@@ -1,45 +1,19 @@
-import React from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { BsThreeDotsVertical } from "react-icons/bs";
+// utils.js
 
-const data = [
-    { month: "Jan", newUsers: 30, sessions: 50, avgDuration: 40 },
-    { month: "Feb", newUsers: 50, sessions: 45, avgDuration: 35 },
-    { month: "Mar", newUsers: 40, sessions: 60, avgDuration: 50 },
-    { month: "Apr", newUsers: 60, sessions: 55, avgDuration: 45 },
-    { month: "May", newUsers: 35, sessions: 70, avgDuration: 55 },
-    { month: "Jun", newUsers: 80, sessions: 65, avgDuration: 40 },
-    { month: "Jul", newUsers: 90, sessions: 60, avgDuration: 50 },
-    { month: "Aug", newUsers: 70, sessions: 75, avgDuration: 30 },
-    { month: "Sep", newUsers: 60, sessions: 80, avgDuration: 45 },
-    { month: "Oct", newUsers: 50, sessions: 70, avgDuration: 35 },
-    { month: "Nov", newUsers: 95, sessions: 85, avgDuration: 60 },
-    { month: "Dec", newUsers: 100, sessions: 95, avgDuration: 70 },
-];
+export const getRemainingTimeUntil5PM = () => {
+    const now = new Date();
+    const endOfDay = new Date();
+    endOfDay.setHours(17, 0, 0, 0); // 5 PM today
 
-const SessionsChart = () => {
-    return (
-        <div className="p-6 bg-white rounded-lg shadow">
-            {/* Header Section */}
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-700">Sessions Duration By New Users</h2>
-                <button className="text-gray-500 flex items-center">View All <BsThreeDotsVertical className="ml-2" /></button>
-            </div>
+    const difference = endOfDay - now;
 
-            {/* Chart Section */}
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <XAxis dataKey="month" stroke="#999" />
-                    <YAxis stroke="#999" />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="newUsers" stroke="#7B61FF" strokeWidth={2} dot={{ r: 4 }} name="New Users" />
-                    <Line type="monotone" dataKey="sessions" stroke="#17A2B8" strokeWidth={2} dot={{ r: 4 }} name="Sessions" />
-                    <Line type="monotone" dataKey="avgDuration" stroke="#F4A261" strokeWidth={2} dot={{ r: 4 }} name="Avg Session Duration" />
-                </LineChart>
-            </ResponsiveContainer>
-        </div>
-    );
+    if (difference <= 0) {
+        return "The day has ended.";
+    }
+
+    const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((difference / 1000 / 60) % 60);
+    const seconds = Math.floor((difference / 1000) % 60);
+
+    return `${hours}h ${minutes}m ${seconds}s`;
 };
-
-export default SessionsChart;

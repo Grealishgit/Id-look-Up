@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import RecentApplicationsCard from "../TableCards/RecentApplicationsCard";
 import { useOutletContext } from "react-router-dom";
-
+import { PieChart, Pie, Cell, Tooltip, Legend, LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 const IdApplications = () => {
     const [analyticsData, setAnalyticsData] = useState({
@@ -10,9 +10,28 @@ const IdApplications = () => {
         totalCountyApplications: 0,
         invalidApplications: 0,
         commonCounties: 0,
+        highestCounties: [],
+        leastActiveCounties: [],
+        countyApplications: [],
     });
     const { isDarkMode } = useOutletContext();
+    const COLORS = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"];
+    const [applications, setApplications] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    // Helper function to generate county applications data
+    const generateCountyApplications = (lostIdApplications) => {
+        const countyCounts = lostIdApplications.reduce((acc, app) => {
+            acc[app.County] = (acc[app.County] || 0) + 1;
+            return acc;
+        }, {});
+
+        return Object.entries(countyCounts).map(([name, count], index) => ({
+            countyNumber: index + 1,
+            applicationsCount: count,
+        }));
+    };
 
     // Fetch total applications
     const fetchTotalApplications = async () => {
@@ -33,7 +52,7 @@ const IdApplications = () => {
         }
     };
 
-    // Fetch total counties where applications have been made
+    // Fetch total county applications
     const fetchTotalCountyApplications = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`);
@@ -53,7 +72,7 @@ const IdApplications = () => {
         }
     };
 
-    // Fetch invalid applications (applications with missing fields)
+    // Fetch invalid applications
     const fetchInvalidApplications = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`);
@@ -72,7 +91,7 @@ const IdApplications = () => {
         }
     };
 
-    // Fetch common counties (counties with more than 2 applications)
+    // Fetch common counties
     const fetchCommonCounties = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`);
@@ -87,28 +106,61 @@ const IdApplications = () => {
                 return acc;
             }, {});
 
-            // Convert to array, sort, and get the top 5 counties
+            // Convert to an array, sort, and get the top 5 counties
             const sortedCounties = Object.entries(countyCounts)
                 .map(([name, count]) => ({ name, count }))
-                .sort((a, b) => b.count - a.count)
-                .slice(0, 5);
+                .sort((a, b) => b.count - a.count) // Sort in descending order (highest first)
+                .slice(0, 5); // Get top 5 counties
 
             // Count how many counties appear more than once
             const commonCounties = Object.values(countyCounts).filter(count => count > 1).length;
 
-            console.log("Common Counties Count:", commonCounties);
+            // Get the bottom 5 least active counties (lowest applications)
+            const leastActiveCounties = Object.entries(countyCounts)
+                .map(([name, count]) => ({ name, count }))
+                .sort((a, b) => a.count - b.count) // Sort in ascending order (lowest first)
+                .slice(0, 5); // Get bottom 5 counties
 
             setAnalyticsData((prev) => ({
                 ...prev,
                 commonCounties,
                 highestCounties: sortedCounties,
+                leastActiveCounties,
             }));
         } catch (error) {
             console.error("Error fetching common counties:", error);
         }
     };
 
+    useEffect(() => {
+        const fetchApplications = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/applications`);
+                const result = response.data;
 
+                if (result.success) {
+                    const lostIdApplications = result.data.lostIdApplications.reverse().slice(0, 5); // Fetch the recent applications
+
+                    setApplications(lostIdApplications); // Set the applications to state
+
+                    // Generate county applications data for the chart
+                    const countyApplications = generateCountyApplications(lostIdApplications); // Pass lostIdApplications here
+                    setAnalyticsData((prev) => ({
+                        ...prev,
+                        countyApplications, // Set county applications data
+                    }));
+                } else {
+                    setError("Failed to fetch applications.");
+                }
+            } catch (err) {
+                setError("Error fetching data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchApplications();
+    }, []);
 
     useEffect(() => {
         fetchTotalApplications();
@@ -165,71 +217,112 @@ const IdApplications = () => {
                             </div>
                         ))
                     ) : (
-                        <p className="text-gray-500">No data available</p>
+                            <p>No data available</p>
                     )}
+
                 </div>
 
 
-                {/* Daily Tasks */}
-                <div className={` p-4 ${isDarkMode ? "bg-gray-600" : "bg-white"}  rounded-lg shadow-md`}>
-                    <h2 className="text-lg font-semibold mb-3">Daily Tasks</h2>
-                    {[
-                        { task: "Home Page Design", tags: ["Framework", "Angular", "PHP"] },
-                        { task: "About Us Page Redesign", tags: ["HTML", "Symphony", "PHP"] },
-                        { task: "New Project Discussion", tags: ["React", "Typescript"] },
-                    ].map((task, index) => (
-                        <div key={index} className="mb-3">
-                            <h3 className="text-md font-medium">{task.task}</h3>
-                            <div className="flex space-x-2 mt-1">
-                                {task.tags.map((tag, i) => (
-                                    <span key={i} className={`text-xs px-2 py-1 ${isDarkMode ? "bg-gray-500" : "bg-white"}  rounded-full`}>{tag}</span>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
+                {/* Chart */}
+                <div className={`p-4 ${isDarkMode ? "bg-gray-600" : "bg-white"} flex justify-center items-center rounded-lg shadow-md`}>
+                    <div className="text-center">
+                        <h2 className="text-lg font-semibold mb-3">Top 5 Counties Overview</h2>
+                        {analyticsData.highestCounties.length > 0 ? (
+                            <PieChart width={200} height={260}>
+                                <Pie
+                                    data={analyticsData.highestCounties}
+                                    dataKey="count"
+                                    nameKey="name"
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={50}
+                                    outerRadius={70}
+                                    fill="#8884d8"
+                                    label
+                                >
+                                    {analyticsData.highestCounties.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        ) : (
+                            <p>No data available</p>
+                        )}
+                    </div>
                 </div>
-                <div className={`${isDarkMode ? " bg-gray-600" : "bg-white"}  p-4 rounded-lg shadow-md`}>
+
+
+
+                <div className={`${isDarkMode ? "bg-gray-600" : "bg-white"} p-4 rounded-lg shadow-md`}>
                     <h2 className="text-lg font-semibold mb-3">Counties Overview</h2>
                     {[
-                        { task: "Top Counties", tags: ["Framework", "Angular", "PHP"] },
-                        { task: "About Us Page Redesign", tags: ["HTML", "Symphony", "PHP"] },
-                        { task: "New Project Discussion", tags: ["React", "Typescript"] },
-                    ].map((task, index) => (
-                        <div key={index} className="mb-3">
-                            <h3 className="text-md font-medium">{task.task}</h3>
-                            <div className="flex space-x-2 mt-1">
-                                {task.tags.map((tag, i) => (
-                                    <span key={i} className={`text-xs px-2 py-1 ${isDarkMode ? " bg-gray-500" : "bg-white"}  rounded-md`}>{tag}</span>
+                        { task: "Top Counties", tags: analyticsData.highestCounties.map(county => `${county.name} ${county.count}`) },
+                        { task: "Common Counties Count", tags: [`${analyticsData.commonCounties} counties appear more than once`] },
+                        { task: "Least Active Counties", tags: analyticsData.leastActiveCounties.map(county => `${county.name}  ${county.count} `) }
+                    ].map((item, index) => (
+                        <div key={index} className="mb-3 ">
+                            <h3 className="text-md font-medium">{item.task}</h3>
+                            <div className="flex gap-2 space-x-2 mt-1 flex-wrap">
+                                {item.tags.map((tag, i) => (
+                                    <span key={i} className={`text-xs px-2 gap-2 py-1 ${isDarkMode ? "bg-gray-500" : "bg-white"} rounded-md`}>
+                                        {tag}
+                                    </span>
                                 ))}
                             </div>
                         </div>
                     ))}
                 </div>
+
+
+
                 {/* Project Analysis */}
-                <div className={`lg:col-span-2 ${isDarkMode ? " bg-gray-600" : "bg-white"}   p-4 rounded-lg shadow-md`}>
+                <div className={`lg:col-span-2 ${isDarkMode ? " bg-gray-600" : "bg-white"} p-4 rounded-lg shadow-md`}>
                     <h2 className="text-lg font-semibold mb-3">Project Analysis</h2>
-                    <p className="text-sm ">Graph Component Placeholder</p>
+                    <p className="text-sm">Graph Component Placeholder</p>
+
+                    <ResponsiveContainer width="100%" height={300}>
+                        <LineChart data={analyticsData.countyApplications}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="countyNumber" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Line
+                                type="monotone"
+                                dataKey="applicationsCount"
+                                stroke="#8884d8"
+                                activeDot={{ r: 8 }}
+                                dot={false}
+                                strokeWidth={2}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
                 </div>
 
                 {/* Recent Transactions */}
                 <div className={`p-4 ${isDarkMode ? "bg-gray-600" : "bg-white"} rounded-lg shadow-md`}>
-                    <h2 className="text-lg font-semibold mb-3">Recent Transactions</h2>
-                    {[
-                        { name: "Simon Cowall", amount: "$21,442", date: "Feb 28, 2023" },
-                        { name: "Melissa Blue", amount: "$8,789", date: "Mar 28, 2023" },
-                        { name: "Gabriel Shin", amount: "$13,677", date: "Mar 16, 2023" },
-                        { name: "Yohasimi Nakiyaro", amount: "$3,543", date: "Mar 19, 2023" },
-                        { name: "Brenda Lynn", amount: "$7,890", date: "Mar 10, 2023" },
-                    ].map((transaction, index) => (
-                        <div key={index} className="flex justify-between py-2 border-b last:border-none">
-                            <div>
-                                <h3 className="text-sm font-medium">{transaction.name}</h3>
-                                <p className="text-xs ">{transaction.date}</p>
+                    <h2 className="text-lg font-semibold mb-3">Recent Applications</h2>
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : error ? (
+                        <p>{error}</p>
+                    ) : applications.length > 0 ? (
+                        applications.map((application, index) => (
+                            <div key={index} className="flex justify-between py-2 border-b last:border-none">
+                                <div>
+                                    <h3 className="text-sm font-medium">{application.fname} {application.lname}</h3>
+                                    <p className="text-xs">{application.County}</p> {/* Display county */}
+                                </div>
+                                <span className="font-semibold">{application.idNo}</span> {/* ID or other relevant data */}
                             </div>
-                            <span className="font-semibold">{transaction.amount}</span>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        <p>No recent applications</p>
+                    )}
                 </div>
+
 
             </div>
             {/* Applications list */}
